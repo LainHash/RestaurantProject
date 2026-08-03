@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Core/">
+    <Project Path="src/Core/Restaurant.Application/Restaurant.Application.csproj" />
+    <Project Path="src/Core/Restaurant.Domain/Restaurant.Domain.csproj" />
+  </Folder>
+  <Folder Name="/External/">
+    <Project Path="src/External/Restaurant.Infrastructure/Restaurant.Infrastructure.csproj" />
+    <Project Path="src/External/Restaurant.Persistence/Restaurant.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="src/Shared/Restaurant.Contract/Restaurant.Contract.csproj" />
+  </Folder>
+  <Project Path="src/Restaurant.API/Restaurant.API.csproj" />
+</Solution>

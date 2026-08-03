@@ -1,0 +1,5 @@
+@Restaurant.API_HostAddress = http://localhost:5124
+
+Accept: application/json
+
+###
