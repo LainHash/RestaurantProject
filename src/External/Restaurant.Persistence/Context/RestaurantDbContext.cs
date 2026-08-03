@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Restaurant.Domain.Abstraction;
+using Restaurant.Domain.Entities.Catalog;
 using System.Reflection;
 
 namespace Restaurant.Persistence.Context
@@ -7,6 +8,9 @@ namespace Restaurant.Persistence.Context
     internal class RestaurantDbContext(DbContextOptions<RestaurantDbContext> options)
         : DbContext(options)
     {
+        public DbSet<Category> Categories { get; set; }
+
+
         // ── Model building ──────────────────────────────────────────────────
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
