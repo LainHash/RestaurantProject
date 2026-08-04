@@ -10,5 +10,9 @@ namespace Restaurant.Application.Services.Catalog
         Task<Result<IEnumerable<CategoryResponse>>> GetAllAsync(
             ISpecification<Category> specification,
             CancellationToken cancellationToken);
+
+        Task<Result<CategoryResponse>> GetOneAsync(
+            ISpecification<Category> specification,
+            CancellationToken cancellationToken);
     }
 }

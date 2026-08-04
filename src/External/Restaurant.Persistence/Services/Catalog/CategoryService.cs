@@ -39,5 +39,21 @@ namespace Restaurant.Persistence.Services.Catalog
                 .Succeed(response, Success<Category>.Retrieved);
 
         }
+
+        public async Task<Result<CategoryResponse>> GetOneAsync(
+            ISpecification<Category> specification,
+            CancellationToken cancellationToken)
+        {
+            var category = await _categoryRepository.FindAsync(specification, cancellationToken);
+            if (category == null)
+            {
+                return Result<CategoryResponse>
+                    .Fail(Error<Category>.NotFound);
+            }
+
+            var response = _mapper.Map<CategoryResponse>(category);
+            return Result<CategoryResponse>
+                .Succeed(response, Success<Category>.Retrieved);
+        }
     }
 }

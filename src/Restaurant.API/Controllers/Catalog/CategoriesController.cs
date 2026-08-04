@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Catalog.Categories.Queries.GetAll;
+using Restaurant.Application.Features.Catalog.Categories.Queries.GetById;
 
 namespace Restaurant.API.Controllers.Catalog
 {
@@ -16,6 +17,16 @@ namespace Restaurant.API.Controllers.Catalog
             [FromQuery] GetAllCategoriesQuery query,
             CancellationToken cancellationToken)
         {
+            var result = await _mediator.Send(query, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(
+            [FromRoute] string id,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetCategoryByIdQuery(id);
             var result = await _mediator.Send(query, cancellationToken);
             return this.ToActionResult(result);
         }
