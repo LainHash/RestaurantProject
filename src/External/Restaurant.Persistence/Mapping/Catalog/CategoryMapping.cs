@@ -15,6 +15,16 @@ namespace Restaurant.Persistence.Mapping.Catalog
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId));
 
             CreateMap<CreateCategoryRequest, Category>();
+
+            CreateMap<UpdateCategoryRequest, Category>()
+                .ForAllMembers(opt =>
+                    opt.Condition((src, dest, srcMember) =>
+                    {
+                        if (srcMember is string s)
+                            return !string.IsNullOrWhiteSpace(s);
+
+                        return srcMember != null;
+                    }));
         }
     }
 }

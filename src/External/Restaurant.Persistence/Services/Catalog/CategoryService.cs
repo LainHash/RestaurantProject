@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Catalog.Categories.Commands.Create;
+using Restaurant.Application.Features.Catalog.Categories.Commands.Update;
 using Restaurant.Application.Models.Messages;
 using Restaurant.Application.Models.Results;
 using Restaurant.Application.Services.Business;
@@ -70,7 +71,7 @@ namespace Restaurant.Persistence.Services.Catalog
             if(category is not null)
             {
                 return Result<CategoryResponse>
-                    .Fail("Category with this name already exists.", HttpStatusCode.Conflict);
+                    .Fail(Error<Category>.ExistedName, HttpStatusCode.Conflict);
             }
 
             category = _mapper.Map<Category>(command.Body);
@@ -81,6 +82,33 @@ namespace Restaurant.Persistence.Services.Catalog
             var response = _mapper.Map<CategoryResponse>(category);
             return Result<CategoryResponse>
                 .Succeed(response, Success<Category>.Created, HttpStatusCode.Created);
+        }
+
+        public async Task<Result<CategoryResponse>> UpdateAsync(
+            UpdateCategoryCommand command,
+            UpdateCategorySpecification specification,
+            CancellationToken cancellationToken)
+        {
+            var category = await _categoryRepository.FindAsync(specification, cancellationToken);
+            if (category is null)
+            {
+                return Result<CategoryResponse>
+                    .Fail(Error<Category>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if(await _categoryRepository.IsExistingNameAsync(command.Body.Name, cancellationToken))
+            {
+                return Result<CategoryResponse>
+                    .Fail(Error<Category>.ExistedName, HttpStatusCode.Conflict);
+            }
+
+            _mapper.Map(command.Body, category);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var response = _mapper.Map<CategoryResponse>(category);
+            return Result<CategoryResponse>
+                .Succeed(response, Success<Category>.Updated, HttpStatusCode.OK);
         }
 
         public async Task<Result<object>> DeleteAsync(
@@ -105,7 +133,7 @@ namespace Restaurant.Persistence.Services.Catalog
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<object>
-                .Succeed(default, Success<Category>.Deleted, HttpStatusCode.Accepted);
+                .Succeed(default, Success<Category>.Deleted);
         }
 
         public async Task<Result<object>> RestoreAsync(
@@ -130,7 +158,7 @@ namespace Restaurant.Persistence.Services.Catalog
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<object>
-                .Succeed(default, Success<Category>.Restored, HttpStatusCode.Accepted);
+                .Succeed(default, Success<Category>.Restored);
         }
     }
 }

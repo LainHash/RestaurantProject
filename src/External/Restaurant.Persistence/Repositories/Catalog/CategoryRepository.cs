@@ -10,6 +10,11 @@ namespace Restaurant.Persistence.Repositories.Catalog
     {
         private readonly RestaurantDbContext _context = context;
 
+        public async Task<bool> IsExistingNameAsync(string name, CancellationToken cancellationToken = default)
+        {
+            return await _context.Categories.AnyAsync(x => EF.Functions.ILike(x.Name, name), cancellationToken);
+        }
+
         public async Task<Category?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             return await _context.Categories.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);

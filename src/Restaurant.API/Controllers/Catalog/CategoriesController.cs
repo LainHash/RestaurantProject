@@ -4,6 +4,7 @@ using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Catalog.Categories.Commands.Create;
 using Restaurant.Application.Features.Catalog.Categories.Commands.Delete;
 using Restaurant.Application.Features.Catalog.Categories.Commands.Restore;
+using Restaurant.Application.Features.Catalog.Categories.Commands.Update;
 using Restaurant.Application.Features.Catalog.Categories.Queries.GetAll;
 using Restaurant.Application.Features.Catalog.Categories.Queries.GetById;
 using Restaurant.Application.Features.Catalog.Categories.Queries.GetByName;
@@ -52,6 +53,17 @@ namespace Restaurant.API.Controllers.Catalog
             CancellationToken cancellationToken)
         {
             var command = new CreateCategoryCommand(body);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Update(
+            [FromRoute] string id,
+            [FromBody] UpdateCategoryRequest body,
+            CancellationToken cancellationToken)
+        {
+            var command = new UpdateCategoryCommand(id, body);
             var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }
