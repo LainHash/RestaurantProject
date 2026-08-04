@@ -14,5 +14,17 @@ namespace Restaurant.Application.Services.Catalog
         Task<Result<CategoryResponse>> GetOneAsync(
             ISpecification<Category> specification,
             CancellationToken cancellationToken);
+
+        Task<Result<CategoryResponse>> CreateAsync(
+            Category category,
+            CancellationToken cancellationToken);
+
+        Task<Result<object>> DeleteAsync(
+            ISpecification<Category> specification,
+            CancellationToken cancellationToken);
+
+        Task<Result<object>> RestoreAsync(
+            ISpecification<Category> specification,
+            CancellationToken cancellationToken);
     }
 }
