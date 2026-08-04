@@ -31,6 +31,11 @@ namespace Restaurant.Persistence.Configurations.Inventory
                 .WithMany(x => x.ProductStocks)
                 .HasForeignKey(x => x.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(x => x.Branch)
+                .WithMany(x => x.ProductStocks)
+                .HasForeignKey(x => x.BranchId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

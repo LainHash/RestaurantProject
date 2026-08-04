@@ -29,6 +29,10 @@ namespace Restaurant.Persistence.Configurations.Catalog
             builder.Property(x => x.Description)
                 .HasMaxLength(1000);
 
+            builder.Property(x => x.InventoryType)
+                .IsRequired()
+                .HasConversion<string>();
+
             builder.HasOne(x => x.Brand)
                 .WithMany(x => x.Products)
                 .HasForeignKey(x => x.BrandId)

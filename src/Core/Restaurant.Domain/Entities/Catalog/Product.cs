@@ -1,6 +1,7 @@
 ﻿using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Inventory;
 using Restaurant.Domain.Entities.Pricing;
+using Restaurant.Domain.Enums;
 
 namespace Restaurant.Domain.Entities.Catalog
 {
