@@ -66,6 +66,7 @@ namespace Restaurant.Persistence
 
             // ── Services ─────────────────────────────────────────────────────
             services.AddScoped<IDataImporter, ExcelImporter>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<ICategoryService, CategoryService>();
 

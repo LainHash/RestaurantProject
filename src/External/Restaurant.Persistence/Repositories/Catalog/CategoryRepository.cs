@@ -22,7 +22,7 @@ namespace Restaurant.Persistence.Repositories.Catalog
 
         public async Task<Category?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
         {
-            return await _context.Categories.FirstOrDefaultAsync(x => string.Equals(x.Name, name), cancellationToken);
+            return await _context.Categories.FirstOrDefaultAsync(x => EF.Functions.ILike(x.Name, name), cancellationToken);
         }
     }
 }

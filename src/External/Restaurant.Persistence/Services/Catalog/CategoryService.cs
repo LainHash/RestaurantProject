@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Restaurant.Application.Features.Catalog.Categories.Commands.Create;
 using Restaurant.Application.Models.Messages;
 using Restaurant.Application.Models.Results;
 using Restaurant.Application.Services.Business;
@@ -62,9 +63,17 @@ namespace Restaurant.Persistence.Services.Catalog
         }
 
         public async Task<Result<CategoryResponse>> CreateAsync(
-            Category category,
+            CreateCategoryCommand command,
             CancellationToken cancellationToken)
         {
+            var category = await _categoryRepository.FindByNameAsync(command.Body.Name, cancellationToken);
+            if(category is not null)
+            {
+                return Result<CategoryResponse>
+                    .Fail("Category with this name already exists.", HttpStatusCode.Conflict);
+            }
+
+            category = _mapper.Map<Category>(command.Body);
             _categoryRepository.Add(category);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

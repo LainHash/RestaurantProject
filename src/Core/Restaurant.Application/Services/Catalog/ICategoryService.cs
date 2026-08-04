@@ -1,4 +1,5 @@
-﻿using Restaurant.Application.Models.Results;
+﻿using Restaurant.Application.Features.Catalog.Categories.Commands.Create;
+using Restaurant.Application.Models.Results;
 using Restaurant.Contract.DTOs.Catalog.Categories;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Specifications;
@@ -16,7 +17,7 @@ namespace Restaurant.Application.Services.Catalog
             CancellationToken cancellationToken);
 
         Task<Result<CategoryResponse>> CreateAsync(
-            Category category,
+            CreateCategoryCommand command,
             CancellationToken cancellationToken);
 
         Task<Result<object>> DeleteAsync(
