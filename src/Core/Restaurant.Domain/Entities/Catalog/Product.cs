@@ -5,7 +5,7 @@ using Restaurant.Domain.Enums;
 
 namespace Restaurant.Domain.Entities.Catalog
 {
-    public class Product : SoftDeletableEntity
+    public partial class Product : SoftDeletableEntity
     {
         public string Name { get; private set; } = string.Empty;
         public string? Description { get; private set; }
@@ -19,5 +19,17 @@ namespace Restaurant.Domain.Entities.Catalog
         
         public ProductPrice ProductPrice { get; private set; } = null!;
         public ICollection<ProductStock> ProductStocks { get; private set; } = [];
+    }
+
+    public partial class Product
+    {
+        public void SetBrand(int? brandId)
+        {
+            BrandId = brandId;
+        }
+        public void SetCategory(int categoryId)
+        {
+            CategoryId = categoryId;
+        }
     }
 }

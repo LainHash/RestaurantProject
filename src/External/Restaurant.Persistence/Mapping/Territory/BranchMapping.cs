@@ -10,7 +10,9 @@ namespace Restaurant.Persistence.Mapping.Territory
         public BranchMapping()
         {
             CreateMap<BranchRecord, Branch>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<BranchStatus>(src.Status)));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<BranchStatus>(src.Status)))
+                .ForMember(dest => dest.OpenTime, opt => opt.MapFrom(src => TimeOnly.FromTimeSpan(src.OpenTime)))
+                .ForMember(dest => dest.CloseTime, opt => opt.MapFrom(src => TimeOnly.FromTimeSpan(src.CloseTime)));
         }
     }
 }

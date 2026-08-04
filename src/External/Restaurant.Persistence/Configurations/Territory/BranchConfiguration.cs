@@ -9,7 +9,7 @@ namespace Restaurant.Persistence.Configurations.Territory
     {
         public void Configure(EntityTypeBuilder<Branch> builder)
         {
-            builder.ToTable("Branchs");
+            builder.ToTable("Branches");
 
             builder.HasKey(x => x.Id);
 

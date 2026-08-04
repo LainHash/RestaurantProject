@@ -19,13 +19,39 @@ namespace Restaurant.Persistence.Seeders.Inventory
             if (await context.ProductStocks.AnyAsync())
                 return;
 
+            var products = await context.Products
+                .Select(x => new {x.Id, x.Name})
+                .ToListAsync();
+
+            var productDictionary = products.ToDictionary(
+                x => x.Name,
+                StringComparer.OrdinalIgnoreCase);
+
+            var branches = await context.Branches
+                .Select(x => new { x.Id, x.Code })
+                .ToListAsync();
+
+            var branchDictionary = branches.ToDictionary(
+                x => x.Code,
+                StringComparer.OrdinalIgnoreCase);
+
             var records =
                 _importer.Read<ProductStockRecord>("ProductStocks");
 
-            var entities =
-                _mapper.Map<List<ProductStock>>(records);
+            foreach (var record in records)
+            {
+                if (!productDictionary.TryGetValue(record.ProductName, out var product))
+                    throw new Exception($"Product '{record.ProductName}' not found.");
 
-            context.ProductStocks.AddRange(entities);
+                if(!branchDictionary.TryGetValue(record.BranchCode, out var branch))
+                    throw new Exception($"Branch '{record.BranchCode}' not found.");
+
+                var productStock = _mapper.Map<ProductStock>(record);
+                productStock.SetProductId(product.Id);
+                productStock.SetBranchId(branch.Id);
+
+                context.ProductStocks.Add(productStock);
+            }
 
             await context.SaveChangesAsync();
         }

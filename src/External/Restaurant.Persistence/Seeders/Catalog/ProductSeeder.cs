@@ -19,13 +19,42 @@ namespace Restaurant.Persistence.Seeders.Catalog
             if (await context.Products.AnyAsync())
                 return;
 
+            var categories = await context.Categories
+                .Select(x => new { x.Id, x.Name })
+                .ToListAsync();
+
+            var categoriesDictionary = categories.ToDictionary(
+                x => x.Name,
+                StringComparer.OrdinalIgnoreCase);
+
+            var brands = await context.Brands
+                .ToListAsync();
+
+            var brandsDictionary = brands.ToDictionary(
+                x => x.Name,
+                StringComparer.OrdinalIgnoreCase);
+
             var records =
                 _importer.Read<ProductRecord>("Products");
 
-            var entities =
-                _mapper.Map<List<Product>>(records);
+            Brand? brand = null;
 
-            context.Products.AddRange(entities);
+            foreach (var record in records)
+            {
+                if (!categoriesDictionary.TryGetValue(record.CategoryName.ToLower(), out var category)) 
+                    throw new Exception($"Category '{record.CategoryName}' not found.");
+
+                if (!string.IsNullOrWhiteSpace(record.BrandName))
+                {
+                    brandsDictionary.TryGetValue(record.BrandName, out brand);
+                }
+
+                var product = _mapper.Map<Product>(record);
+                product.SetCategory(category.Id);
+                product.SetBrand(brand?.Id);
+
+                context.Products.Add(product);
+            }
 
             await context.SaveChangesAsync();
         }
