@@ -2,12 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Application.Services.Business;
+using Restaurant.Application.Services.Catalog;
 using Restaurant.Domain.Repositories;
 using Restaurant.Persistence.Context;
 using Restaurant.Persistence.Repositories;
 using Restaurant.Persistence.Repositories.Catalog;
 using Restaurant.Persistence.Seeders;
 using Restaurant.Persistence.Services.Business;
+using Restaurant.Persistence.Services.Catalog;
 
 namespace Restaurant.Persistence
 {
@@ -64,6 +66,8 @@ namespace Restaurant.Persistence
 
             // ── Services ─────────────────────────────────────────────────────
             services.AddScoped<IDataImporter, ExcelImporter>();
+
+            services.AddScoped<ICategoryService, CategoryService>();
 
             return services;
         }
