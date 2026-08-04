@@ -2,7 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Application.Services.Business;
+using Restaurant.Domain.Repositories;
 using Restaurant.Persistence.Context;
+using Restaurant.Persistence.Repositories;
+using Restaurant.Persistence.Repositories.Catalog;
 using Restaurant.Persistence.Seeders;
 using Restaurant.Persistence.Services.Business;
 
@@ -38,6 +41,26 @@ namespace Restaurant.Persistence
             }
 
             // ── Repositories ─────────────────────────────────────────────────
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            var assembly = typeof(CategoryRepository).Assembly;
+
+            foreach (var type in assembly.GetTypes())
+            {
+                if (!type.IsClass || type.IsAbstract)
+                    continue;
+
+                if (!type.Name.EndsWith("Repository"))
+                    continue;
+
+                foreach (var iface in type.GetInterfaces())
+                {
+                    if (iface.Name.EndsWith("Repository"))
+                    {
+                        services.AddScoped(iface, type);
+                    }
+                }
+            }
 
             // ── Services ─────────────────────────────────────────────────────
             services.AddScoped<IDataImporter, ExcelImporter>();
