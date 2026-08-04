@@ -9,7 +9,7 @@ namespace Restaurant.Application.Services.Catalog
 {
     public interface ICategoryService
     {
-        Task<Result<IEnumerable<CategoryResponse>>> GetAllAsync(
+        Task<PageResult<IEnumerable<CategoryResponse>>> GetAllAsync(
             ISpecification<Category> specification,
             CancellationToken cancellationToken);
 

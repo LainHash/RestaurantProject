@@ -30,20 +30,22 @@ namespace Restaurant.Persistence.Services.Catalog
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<IEnumerable<CategoryResponse>>> GetAllAsync(
+        public async Task<PageResult<IEnumerable<CategoryResponse>>> GetAllAsync(
             ISpecification<Category> specification,
             CancellationToken cancellationToken)
         {
+            var totalItems = await _categoryRepository.CountAsync(specification, cancellationToken);
+
             var categories = await _categoryRepository.ToListAsync(specification, cancellationToken);
             if (!categories.Any())
             {
-                return Result<IEnumerable<CategoryResponse>>
+                return PageResult<IEnumerable<CategoryResponse>>
                     .Fail(Error<Category>.EmptyList);
             }
 
             var response = _mapper.Map<IEnumerable<CategoryResponse>>(categories);
-            return Result<IEnumerable<CategoryResponse>>
-                .Succeed(response, Success<Category>.Retrieved);
+            return PageResult<IEnumerable<CategoryResponse>>
+                .Succeed(response, Success<Category>.Retrieved, totalItems, specification.Skip, specification.Take);
 
         }
 
