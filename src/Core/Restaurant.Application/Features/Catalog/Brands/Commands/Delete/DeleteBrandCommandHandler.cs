@@ -1,0 +1,19 @@
+using MediatR;
+using Restaurant.Application.Models.Results;
+using Restaurant.Application.Services.Catalog;
+
+namespace Restaurant.Application.Features.Catalog.Brands.Commands.Delete
+{
+    internal class DeleteBrandCommandHandler(IBrandService brandService)
+                : IRequestHandler<DeleteBrandCommand, Result<object>>
+    {
+        private readonly IBrandService _brandService = brandService;
+
+        public async Task<Result<object>> Handle(DeleteBrandCommand request, CancellationToken cancellationToken)
+        {
+            var specification = new DeleteBrandSpecification(request);
+            var response = await _brandService.DeleteAsync(specification, cancellationToken);
+            return response;
+        }
+    }
+}
