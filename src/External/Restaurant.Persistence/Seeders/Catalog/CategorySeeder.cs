@@ -7,18 +7,12 @@ using Restaurant.Persistence.DataRecords.Catalog;
 
 namespace Restaurant.Persistence.Seeders.Catalog
 {
-    internal class CategorySeeder : IDataSeeder
+    internal class CategorySeeder(
+        IDataImporter importer,
+        IMapper mapper) : IDataSeeder
     {
-        private readonly IDataImporter _importer;
-        private readonly IMapper _mapper;
-
-        public CategorySeeder(
-            IDataImporter importer,
-            IMapper mapper)
-        {
-            _importer = importer;
-            _mapper = mapper;
-        }
+        private readonly IDataImporter _importer = importer;
+        private readonly IMapper _mapper = mapper;
 
         public async Task SeedAsync(RestaurantDbContext context)
         {

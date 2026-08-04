@@ -1,24 +1,29 @@
 using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Persistence.Context;
 using Restaurant.Persistence.Seeders.Catalog;
+using Restaurant.Persistence.Seeders.Inventory;
+using Restaurant.Persistence.Seeders.Pricing;
+using Restaurant.Persistence.Seeders.Territory;
 
 namespace Restaurant.Persistence.Seeders
 {
-    internal class DatabaseSeeder
+    internal class DatabaseSeeder(
+        IServiceProvider serviceProvider,
+        RestaurantDbContext context)
     {
-        private readonly RestaurantDbContext _context;
-        private readonly IServiceProvider _serviceProvider;
-
-        public DatabaseSeeder(IServiceProvider serviceProvider, RestaurantDbContext context)
-        {
-            _serviceProvider = serviceProvider;
-            _context = context;
-        }
+        private readonly RestaurantDbContext _context = context;
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
 
         public async Task SeedAllAsync()
         {
             await SeedAsync<CategorySeeder>(_context);
             await SeedAsync<BrandSeeder>(_context);
+
+            await SeedAsync<BranchSeeder>(_context);
+
+            await SeedAsync<ProductSeeder>(_context);
+            await SeedAsync<ProductPriceSeeder>(_context);
+            await SeedAsync<ProductStockSeeder>(_context);
         }
 
         private async Task SeedAsync<TSeeder>(RestaurantDbContext context) where TSeeder : IDataSeeder

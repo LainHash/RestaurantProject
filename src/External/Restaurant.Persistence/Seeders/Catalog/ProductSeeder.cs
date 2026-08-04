@@ -7,7 +7,7 @@ using Restaurant.Persistence.DataRecords.Catalog;
 
 namespace Restaurant.Persistence.Seeders.Catalog
 {
-    internal class BrandSeeder(
+    internal class ProductSeeder(
         IDataImporter importer,
         IMapper mapper) : IDataSeeder
     {
@@ -16,16 +16,16 @@ namespace Restaurant.Persistence.Seeders.Catalog
 
         public async Task SeedAsync(RestaurantDbContext context)
         {
-            if (await context.Brands.AnyAsync())
+            if (await context.Products.AnyAsync())
                 return;
 
             var records =
-                _importer.Read<BrandRecord>("Brands");
+                _importer.Read<ProductRecord>("Products");
 
             var entities =
-                _mapper.Map<List<Brand>>(records);
+                _mapper.Map<List<Product>>(records);
 
-            context.Brands.AddRange(entities);
+            context.Products.AddRange(entities);
 
             await context.SaveChangesAsync();
         }

@@ -3,6 +3,7 @@ using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Inventory;
 using Restaurant.Domain.Entities.Pricing;
+using Restaurant.Domain.Entities.Territory;
 using System.Reflection;
 
 namespace Restaurant.Persistence.Context
@@ -12,6 +13,8 @@ namespace Restaurant.Persistence.Context
     {
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Brand> Brands { get; set; } = null!;
+
+        public DbSet<Branch> Branches { get; set; } = null!;
 
         public DbSet<Product> Products { get; set; } = null!;
         public DbSet<ProductPrice> ProductPrices { get; set; } = null!;

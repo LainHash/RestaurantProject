@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Application.Services.Business;
-using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Entities.Territory;
 using Restaurant.Persistence.Context;
-using Restaurant.Persistence.DataRecords.Catalog;
+using Restaurant.Persistence.DataRecords.Territory;
 
-namespace Restaurant.Persistence.Seeders.Catalog
+namespace Restaurant.Persistence.Seeders.Territory
 {
-    internal class BrandSeeder(
+    internal class BranchSeeder(
         IDataImporter importer,
         IMapper mapper) : IDataSeeder
     {
@@ -16,16 +16,16 @@ namespace Restaurant.Persistence.Seeders.Catalog
 
         public async Task SeedAsync(RestaurantDbContext context)
         {
-            if (await context.Brands.AnyAsync())
+            if (await context.Branches.AnyAsync())
                 return;
 
             var records =
-                _importer.Read<BrandRecord>("Brands");
+                _importer.Read<BranchRecord>("Branches");
 
             var entities =
-                _mapper.Map<List<Brand>>(records);
+                _mapper.Map<List<Branch>>(records);
 
-            context.Brands.AddRange(entities);
+            context.Branches.AddRange(entities);
 
             await context.SaveChangesAsync();
         }
