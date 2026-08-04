@@ -44,8 +44,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Data\" />
-	  <Folder Include="DataRecords\" />
-	  <Folder Include="Seeders\" />
 	</ItemGroup>
 
 </Project>
