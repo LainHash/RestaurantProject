@@ -78,10 +78,11 @@ namespace Restaurant.Persistence.Services.Catalog
                     .Fail(Error<Category>.NotFound, HttpStatusCode.NotFound);
             }
 
-            var brand = new Brand();
+            Brand? brand = null;
             if (!string.IsNullOrEmpty(request.BrandId))
             {
                 brand = await _brandRepository.FindByIdAsync(request.BrandId, cancellationToken);
+
                 if (brand is null)
                 {
                     return Result<ProductResponse>
@@ -91,7 +92,7 @@ namespace Restaurant.Persistence.Services.Catalog
 
             var product = _mapper.Map<Product>(request)
                 .SetCategory(category.Id)
-                .SetBrand(brand.Id);
+                .SetBrand(brand?.Id);
             _productRepository.Add(product);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -116,10 +117,11 @@ namespace Restaurant.Persistence.Services.Catalog
                     .Fail(Error<Category>.NotFound, HttpStatusCode.NotFound);
             }
 
-            var brand = new Brand();
+            Brand? brand = null;
             if (!string.IsNullOrEmpty(request.BrandId))
             {
                 brand = await _brandRepository.FindByIdAsync(request.BrandId, cancellationToken);
+
                 if (brand is null)
                 {
                     return Result<ProductResponse>
@@ -136,7 +138,7 @@ namespace Restaurant.Persistence.Services.Catalog
 
             _mapper.Map(request, product)
                 .SetCategory(category.Id)
-                .SetBrand(brand.Id);
+                .SetBrand(brand?.Id);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
