@@ -1,4 +1,5 @@
 ﻿using Restaurant.Application.Features.Catalog.Products.Commands.Create;
+using Restaurant.Application.Features.Catalog.Products.Commands.Update;
 using Restaurant.Application.Models.Results;
 using Restaurant.Contract.DTOs.Catalog.Products;
 using Restaurant.Domain.Entities.Catalog;
@@ -19,6 +20,11 @@ namespace Restaurant.Application.Services.Catalog
         Task<Result<ProductResponse>> CreateAsync(
             CreateProductSpecification specification,
             CreateProductRequest request,
+            CancellationToken cancellationToken);
+
+        Task<Result<ProductResponse>> UpdateAsync(
+            UpdateProductSpecification specification,
+            UpdateProductRequest request,
             CancellationToken cancellationToken);
     }
 }

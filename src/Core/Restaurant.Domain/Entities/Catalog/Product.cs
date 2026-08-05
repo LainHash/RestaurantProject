@@ -28,6 +28,7 @@ namespace Restaurant.Domain.Entities.Catalog
             BrandId = brandId;
             return this;
         }
+
         public Product SetCategory(int categoryId)
         {
             CategoryId = categoryId;

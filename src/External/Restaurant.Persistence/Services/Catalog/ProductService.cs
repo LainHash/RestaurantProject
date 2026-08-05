@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Core;
 using Restaurant.Application.Features.Catalog.Products.Commands.Create;
+using Restaurant.Application.Features.Catalog.Products.Commands.Update;
 using Restaurant.Application.Models.Messages;
 using Restaurant.Application.Models.Results;
 using Restaurant.Application.Services.Business;
@@ -15,6 +17,8 @@ namespace Restaurant.Persistence.Services.Catalog
     internal class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IBrandRepository _brandRepository;
 
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,11 +26,15 @@ namespace Restaurant.Persistence.Services.Catalog
         public ProductService(
             IProductRepository productRepository,
             IMapper mapper,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ICategoryRepository categoryRepository,
+            IBrandRepository brandRepository)
         {
             _productRepository = productRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _categoryRepository = categoryRepository;
+            _brandRepository = brandRepository;
         }
 
         public async Task<PageResult<IEnumerable<ProductResponse>>> GetAllAsync(
@@ -63,7 +71,27 @@ namespace Restaurant.Persistence.Services.Catalog
             CreateProductRequest request,
             CancellationToken cancellationToken)
         {
-            var product = _mapper.Map<Product>(request);
+            var category = await _categoryRepository.FindByIdAsync(request.CategoryId, cancellationToken);
+            if(category is null)
+            {
+                return Result<ProductResponse>
+                    .Fail(Error<Category>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var brand = new Brand();
+            if (!string.IsNullOrEmpty(request.BrandId))
+            {
+                brand = await _brandRepository.FindByIdAsync(request.BrandId, cancellationToken);
+                if (brand is null)
+                {
+                    return Result<ProductResponse>
+                        .Fail(Error<Brand>.NotFound, HttpStatusCode.NotFound);
+                }
+            }
+
+            var product = _mapper.Map<Product>(request)
+                .SetCategory(category.Id)
+                .SetBrand(brand.Id);
             _productRepository.Add(product);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -74,6 +102,49 @@ namespace Restaurant.Persistence.Services.Catalog
             var response = _mapper.Map<ProductResponse>(createdProduct);
             return Result<ProductResponse>
                 .Succeed(response, Success<Product>.Created, HttpStatusCode.Created);
+        }
+
+        public async Task<Result<ProductResponse>> UpdateAsync(
+            UpdateProductSpecification specification,
+            UpdateProductRequest request,
+            CancellationToken cancellationToken)
+        {
+            var category = await _categoryRepository.FindByIdAsync(request.CategoryId, cancellationToken);
+            if (category is null)
+            {
+                return Result<ProductResponse>
+                    .Fail(Error<Category>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var brand = new Brand();
+            if (!string.IsNullOrEmpty(request.BrandId))
+            {
+                brand = await _brandRepository.FindByIdAsync(request.BrandId, cancellationToken);
+                if (brand is null)
+                {
+                    return Result<ProductResponse>
+                        .Fail(Error<Brand>.NotFound, HttpStatusCode.NotFound);
+                }
+            }
+
+            var product = await _productRepository.FindAsync(specification, cancellationToken);
+            if(product is null)
+            {
+                return Result<ProductResponse>
+                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            _mapper.Map(request, product)
+                .SetCategory(category.Id)
+                .SetBrand(brand.Id);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var updatedProduct = await _productRepository.FindAsync(specification, cancellationToken);
+
+            var response = _mapper.Map<ProductResponse>(updatedProduct);
+            return Result<ProductResponse>
+                .Succeed(response, Success<Product>.Updated);
         }
     }
 }
