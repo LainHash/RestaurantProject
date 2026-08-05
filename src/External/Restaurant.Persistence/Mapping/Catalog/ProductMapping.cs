@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Restaurant.Contract.DTOs.Catalog.Products;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Enums;
 using Restaurant.Persistence.DataRecords.Catalog;
@@ -11,6 +12,10 @@ namespace Restaurant.Persistence.Mapping.Catalog
         {
             CreateMap<ProductRecord, Product>()
                 .ForMember(dest => dest.InventoryType, opt => opt.MapFrom(src => Enum.Parse<InventoryType>(src.InventoryType)));
+
+            CreateMap<Product, ProductResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId))
+                .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.ProductPrice.UnitPrice));
         }
     }
 }
