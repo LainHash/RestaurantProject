@@ -26,13 +26,13 @@ namespace Restaurant.Domain.Entities.Inventory
             BranchId = branchId;
         }
 
-        public ProductStock SetProductId(int productId)
+        public ProductStock SetProduct(int productId)
         {
             ProductId = productId;
             return this;
         }
 
-        public ProductStock SetBranchId(int branchId)
+        public ProductStock SetBranch(int branchId)
         {
             BranchId = branchId;
             return this;

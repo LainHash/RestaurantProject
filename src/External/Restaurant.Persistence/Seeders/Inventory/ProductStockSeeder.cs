@@ -47,8 +47,8 @@ namespace Restaurant.Persistence.Seeders.Inventory
                     throw new Exception($"Branch '{record.BranchCode}' not found.");
 
                 var productStock = _mapper.Map<ProductStock>(record)
-                    .SetProductId(product.Id)
-                    .SetBranchId(branch.Id);
+                    .SetProduct(product.Id)
+                    .SetBranch(branch.Id);
 
                 context.ProductStocks.Add(productStock);
             }

@@ -36,7 +36,7 @@ namespace Restaurant.Persistence.Seeders.Pricing
                     throw new Exception($"Product '{record.ProductName}' not found.");
 
                 var price = _mapper.Map<ProductPrice>(record)
-                    .SetProductId(product.Id);
+                    .SetProduct(product.Id);
 
                 context.ProductPrices.Add(price);
             }
