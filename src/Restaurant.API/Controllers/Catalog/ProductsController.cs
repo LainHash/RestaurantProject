@@ -7,7 +7,9 @@ using Restaurant.Application.Features.Catalog.Products.Commands.Restore;
 using Restaurant.Application.Features.Catalog.Products.Commands.Update;
 using Restaurant.Application.Features.Catalog.Products.Queries.GetAll;
 using Restaurant.Application.Features.Catalog.Products.Queries.GetById;
+using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
 using Restaurant.Contract.DTOs.Catalog.Products;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Restaurant.API.Controllers.Catalog
 {
@@ -74,6 +76,16 @@ namespace Restaurant.API.Controllers.Catalog
         {
             var command = new RestoreProductCommand(id);
             var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpGet("{id}/stock-list")]
+        public async Task<IActionResult> GetAllStock(
+            [FromRoute] string id,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetAllProductStocksByProductIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
             return this.ToActionResult(result);
         }
     }
