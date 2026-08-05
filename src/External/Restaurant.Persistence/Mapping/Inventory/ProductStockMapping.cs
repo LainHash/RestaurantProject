@@ -13,7 +13,8 @@ namespace Restaurant.Persistence.Mapping.Inventory
 
             CreateMap<ProductStock, ProductStockResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId))
-                .ForMember(dest => dest.BranchCode, opt => opt.MapFrom(src => src.Branch.Code));
+                .ForMember(dest => dest.BranchCode, opt => opt.MapFrom(src => src.Branch.Code))
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
         }
     }
 }

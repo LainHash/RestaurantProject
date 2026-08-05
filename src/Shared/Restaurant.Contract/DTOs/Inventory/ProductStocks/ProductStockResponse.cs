@@ -8,5 +8,6 @@
         public decimal QuantityOnHand { get; set; }
 
         public string BranchCode { get; set; } = string.Empty;
+        public string ProductName { get; set; } = string.Empty;
     }
 }

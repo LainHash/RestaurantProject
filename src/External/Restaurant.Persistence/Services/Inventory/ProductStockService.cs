@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByBranchId;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
 using Restaurant.Application.Models.Messages;
 using Restaurant.Application.Models.Results;
@@ -8,6 +9,7 @@ using Restaurant.Contract.DTOs.Catalog.Products;
 using Restaurant.Contract.DTOs.Inventory.ProductStocks;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Inventory;
+using Restaurant.Domain.Entities.Territory;
 using Restaurant.Domain.Enums;
 using Restaurant.Domain.Repositories.Catalog;
 using Restaurant.Domain.Repositories.Inventory;
@@ -19,6 +21,7 @@ namespace Restaurant.Persistence.Services.Inventory
     {
         private readonly IProductStockRepository _productStockRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IBrandRepository _brandRepository;
 
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -27,12 +30,14 @@ namespace Restaurant.Persistence.Services.Inventory
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IProductStockRepository productStockRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+            IBrandRepository brandRepository)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _productStockRepository = productStockRepository;
             _productRepository = productRepository;
+            _brandRepository = brandRepository;
         }
 
         public async Task<Result<IEnumerable<ProductStockResponse>>> GetAllByProductIdAsync(
@@ -51,6 +56,25 @@ namespace Restaurant.Persistence.Services.Inventory
             {
                 return Result<IEnumerable<ProductStockResponse>>
                     .Fail("This Product is made to order.");
+            }
+
+            var productStocks = await _productStockRepository.ToListAsync(specification, cancellationToken);
+
+            var response = _mapper.Map<IEnumerable<ProductStockResponse>>(productStocks);
+            return Result<IEnumerable<ProductStockResponse>>
+                .Succeed(response, Success<ProductStock>.Retrieved);
+        }
+
+        public async Task<Result<IEnumerable<ProductStockResponse>>> GetAllByBranchIdAsync(
+            GetAllProductStockByBranchIdQuery query,
+            GetAllProductStockByBranchIdSpecification specification,
+            CancellationToken cancellationToken)
+        {
+            var branch = await _brandRepository.FindByIdAsync(query.BranchId, cancellationToken);
+            if(branch is null)
+            {
+                return Result<IEnumerable<ProductStockResponse>>
+                    .Fail(Error<Branch>.NotFound, HttpStatusCode.NotFound);
             }
 
             var productStocks = await _productStockRepository.ToListAsync(specification, cancellationToken);
