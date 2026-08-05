@@ -37,10 +37,11 @@ namespace Restaurant.Persistence.Seeders.Catalog
             var records =
                 _importer.Read<ProductRecord>("Products");
 
-            Brand? brand = null;
 
             foreach (var record in records)
             {
+                Brand? brand = null;
+
                 if (!categoriesDictionary.TryGetValue(record.CategoryName.ToLower(), out var category)) 
                     throw new Exception($"Category '{record.CategoryName}' not found.");
 
