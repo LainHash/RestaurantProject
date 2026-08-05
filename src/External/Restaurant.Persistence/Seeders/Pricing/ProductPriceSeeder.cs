@@ -35,8 +35,8 @@ namespace Restaurant.Persistence.Seeders.Pricing
                 if (!productDictionary.TryGetValue(record.ProductName, out var product))
                     throw new Exception($"Product '{record.ProductName}' not found.");
 
-                var price = _mapper.Map<ProductPrice>(record);
-                price.SetProductId(product.Id);
+                var price = _mapper.Map<ProductPrice>(record)
+                    .SetProductId(product.Id);
 
                 context.ProductPrices.Add(price);
             }

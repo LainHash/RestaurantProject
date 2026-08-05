@@ -37,11 +37,6 @@ namespace Restaurant.Persistence.Services.Catalog
             var totalItems = await _brandRepository.CountAsync(specification, cancellationToken);
 
             var brands = await _brandRepository.ToListAsync(specification, cancellationToken);
-            if (!brands.Any())
-            {
-                return PageResult<IEnumerable<BrandResponse>>
-                    .Fail(Error<Brand>.EmptyList);
-            }
 
             var response = _mapper.Map<IEnumerable<BrandResponse>>(brands);
             return PageResult<IEnumerable<BrandResponse>>

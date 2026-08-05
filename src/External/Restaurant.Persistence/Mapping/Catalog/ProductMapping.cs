@@ -15,7 +15,9 @@ namespace Restaurant.Persistence.Mapping.Catalog
 
             CreateMap<Product, ProductResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId))
-                .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.ProductPrice.UnitPrice));
+                .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.ProductPrice.UnitPrice))
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand!.Name))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
         }
     }
 }

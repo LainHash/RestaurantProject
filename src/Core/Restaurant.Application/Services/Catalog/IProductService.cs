@@ -1,0 +1,18 @@
+﻿using Restaurant.Application.Models.Results;
+using Restaurant.Contract.DTOs.Catalog.Products;
+using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Specifications;
+
+namespace Restaurant.Application.Services.Catalog
+{
+    public interface IProductService
+    {
+        Task<PageResult<IEnumerable<ProductResponse>>> GetAllAsync(
+            ISpecification<Product> specification,
+            CancellationToken cancellationToken);
+
+        Task<Result<ProductResponse>> GetByIdAsync(
+            ISpecification<Product> specification,
+            CancellationToken cancellationToken);
+    }
+}

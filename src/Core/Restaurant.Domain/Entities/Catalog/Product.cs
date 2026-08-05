@@ -23,13 +23,15 @@ namespace Restaurant.Domain.Entities.Catalog
 
     public partial class Product
     {
-        public void SetBrand(int? brandId)
+        public Product SetBrand(int? brandId)
         {
             BrandId = brandId;
+            return this;
         }
-        public void SetCategory(int categoryId)
+        public Product SetCategory(int categoryId)
         {
             CategoryId = categoryId;
+            return this;
         }
     }
 }

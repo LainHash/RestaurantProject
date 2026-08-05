@@ -46,9 +46,9 @@ namespace Restaurant.Persistence.Seeders.Inventory
                 if(!branchDictionary.TryGetValue(record.BranchCode, out var branch))
                     throw new Exception($"Branch '{record.BranchCode}' not found.");
 
-                var productStock = _mapper.Map<ProductStock>(record);
-                productStock.SetProductId(product.Id);
-                productStock.SetBranchId(branch.Id);
+                var productStock = _mapper.Map<ProductStock>(record)
+                    .SetProductId(product.Id)
+                    .SetBranchId(branch.Id);
 
                 context.ProductStocks.Add(productStock);
             }

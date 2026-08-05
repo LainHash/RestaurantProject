@@ -37,11 +37,6 @@ namespace Restaurant.Persistence.Services.Catalog
             var totalItems = await _categoryRepository.CountAsync(specification, cancellationToken);
 
             var categories = await _categoryRepository.ToListAsync(specification, cancellationToken);
-            if (!categories.Any())
-            {
-                return PageResult<IEnumerable<CategoryResponse>>
-                    .Fail(Error<Category>.EmptyList);
-            }
 
             var response = _mapper.Map<IEnumerable<CategoryResponse>>(categories);
             return PageResult<IEnumerable<CategoryResponse>>

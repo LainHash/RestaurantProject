@@ -49,9 +49,9 @@ namespace Restaurant.Persistence.Seeders.Catalog
                     brandsDictionary.TryGetValue(record.BrandName, out brand);
                 }
 
-                var product = _mapper.Map<Product>(record);
-                product.SetCategory(category.Id);
-                product.SetBrand(brand?.Id);
+                var product = _mapper.Map<Product>(record)
+                    .SetCategory(category.Id)
+                    .SetBrand(brand?.Id);
 
                 context.Products.Add(product);
             }

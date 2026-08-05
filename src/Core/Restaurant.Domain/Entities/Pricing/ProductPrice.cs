@@ -21,9 +21,10 @@ namespace Restaurant.Domain.Entities.Pricing
             ProductId = productId;
         }
         
-        public void SetProductId(int productId)
+        public ProductPrice SetProductId(int productId)
         {
             ProductId = productId;
+            return this;
         }
     }
 }
