@@ -57,7 +57,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             [FromRoute] string id,
             [FromBody] UpdateCategoryRequest body,

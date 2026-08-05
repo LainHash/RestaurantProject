@@ -1,6 +1,8 @@
 namespace Restaurant.Contract.DTOs.Catalog.Brands
 {
-    public class UpdateBrandRequest : CreateBrandRequest
+    public class UpdateBrandRequest
     {
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
     }
 }

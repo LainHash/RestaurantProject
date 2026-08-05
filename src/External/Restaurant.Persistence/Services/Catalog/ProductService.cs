@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Restaurant.Application.Features.Catalog.Products.Commands.Create;
 using Restaurant.Application.Models.Messages;
 using Restaurant.Application.Models.Results;
 using Restaurant.Application.Services.Business;
@@ -55,6 +56,24 @@ namespace Restaurant.Persistence.Services.Catalog
             var response = _mapper.Map<ProductResponse>(product);
             return Result<ProductResponse>
                 .Succeed(response, Success<Product>.Retrieved);
+        }
+
+        public async Task<Result<ProductResponse>> CreateAsync(
+            CreateProductSpecification specification,
+            CreateProductRequest request,
+            CancellationToken cancellationToken)
+        {
+            var product = _mapper.Map<Product>(request);
+            _productRepository.Add(product);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            specification.ApplyCriteria(product.Id);
+            var createdProduct = await _productRepository.FindAsync(specification, cancellationToken);
+            
+            var response = _mapper.Map<ProductResponse>(createdProduct);
+            return Result<ProductResponse>
+                .Succeed(response, Success<Product>.Created, HttpStatusCode.Created);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Restaurant.Application.Models.Results;
+﻿using Restaurant.Application.Features.Catalog.Products.Commands.Create;
+using Restaurant.Application.Models.Results;
 using Restaurant.Contract.DTOs.Catalog.Products;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Specifications;
@@ -13,6 +14,11 @@ namespace Restaurant.Application.Services.Catalog
 
         Task<Result<ProductResponse>> GetByIdAsync(
             ISpecification<Product> specification,
+            CancellationToken cancellationToken);
+
+        Task<Result<ProductResponse>> CreateAsync(
+            CreateProductSpecification specification,
+            CreateProductRequest request,
             CancellationToken cancellationToken);
     }
 }

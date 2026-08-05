@@ -16,15 +16,7 @@ namespace Restaurant.Persistence.Mapping.Catalog
 
             CreateMap<CreateBrandRequest, Brand>();
 
-            CreateMap<UpdateBrandRequest, Brand>()
-                .ForAllMembers(opt =>
-                    opt.Condition((src, dest, srcMember) =>
-                    {
-                        if (srcMember is string s)
-                            return !string.IsNullOrWhiteSpace(s);
-
-                        return srcMember != null;
-                    }));
+            CreateMap<UpdateBrandRequest, Brand>();
         }
     }
 }
