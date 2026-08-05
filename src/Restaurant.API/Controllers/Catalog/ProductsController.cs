@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Catalog.Products.Commands.Create;
+using Restaurant.Application.Features.Catalog.Products.Commands.Delete;
+using Restaurant.Application.Features.Catalog.Products.Commands.Restore;
 using Restaurant.Application.Features.Catalog.Products.Commands.Update;
 using Restaurant.Application.Features.Catalog.Products.Queries.GetAll;
 using Restaurant.Application.Features.Catalog.Products.Queries.GetById;
@@ -51,6 +53,26 @@ namespace Restaurant.API.Controllers.Catalog
             CancellationToken cancellationToken)
         {
             var command = new UpdateProductCommand(id, body);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(
+            [FromRoute] string id,
+            CancellationToken cancellationToken)
+        {
+            var command = new DeleteProductCommand(id);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpPatch("{id}/restore")]
+        public async Task<IActionResult> Restore(
+            [FromRoute] string id,
+            CancellationToken cancellationToken)
+        {
+            var command = new RestoreProductCommand(id);
             var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }

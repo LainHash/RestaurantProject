@@ -148,5 +148,55 @@ namespace Restaurant.Persistence.Services.Catalog
             return Result<ProductResponse>
                 .Succeed(response, Success<Product>.Updated);
         }
+
+        public async Task<Result<object>> DeleteAsync(
+            ISpecification<Product> specification,
+            CancellationToken cancellationToken)
+        {
+            var product = await _productRepository.FindAsync(specification, cancellationToken);
+            if (product is null)
+            {
+                return Result<object>
+                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (product.IsDeleted)
+            {
+                return Result<object>
+                    .Fail(Error<Product>.AlreadyDeleted, HttpStatusCode.BadRequest);
+            }
+
+            product.SoftDelete();
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result<object>
+                .Succeed(default, Success<Product>.Deleted);
+        }
+
+        public async Task<Result<object>> RestoreAsync(
+            ISpecification<Product> specification,
+            CancellationToken cancellationToken)
+        {
+            var product = await _productRepository.FindAsync(specification, cancellationToken);
+            if (product is null)
+            {
+                return Result<object>
+                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (!product.IsDeleted)
+            {
+                return Result<object>
+                    .Fail(Error<Product>.NotYetDeleted, HttpStatusCode.BadRequest);
+            }
+
+            product.Restore();
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result<object>
+                .Succeed(default, Success<Product>.Restored);
+        }
     }
 }
