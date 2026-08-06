@@ -45,7 +45,7 @@ namespace Restaurant.Application.Features.Catalog.Products.Queries.GetAll
                     break;
             }
 
-            ApplyPaging((query.Page - 1) * query.PageSize, query.PageSize);
+            ApplyPaging(query.Page, query.PageSize);
         }
     }
 }

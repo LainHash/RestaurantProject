@@ -21,6 +21,9 @@ namespace Restaurant.Persistence.Mapping.Catalog
 
             CreateMap<CreateProductRequest, Product>()
                 .ForPath(dest => dest.ProductPrice.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice));
+
+            CreateMap<UpdateProductRequest, Product>()
+                .ForPath(dest => dest.ProductPrice.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice));
         }
     }
 }

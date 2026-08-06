@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Catalog;
 using Restaurant.Application.Services.Inventory;
+using Restaurant.Application.Services.Territory;
 using Restaurant.Domain.Repositories;
 using Restaurant.Persistence.Context;
 using Restaurant.Persistence.Repositories;
@@ -12,6 +13,7 @@ using Restaurant.Persistence.Seeders;
 using Restaurant.Persistence.Services.Business;
 using Restaurant.Persistence.Services.Catalog;
 using Restaurant.Persistence.Services.Inventory;
+using Restaurant.Persistence.Services.Territory;
 
 namespace Restaurant.Persistence
 {
@@ -72,6 +74,8 @@ namespace Restaurant.Persistence
 
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IBrandService, BrandService>();
+
+            services.AddScoped<IBranchService, BranchService>();
 
             services.AddScoped<IProductService, ProductService>();
 

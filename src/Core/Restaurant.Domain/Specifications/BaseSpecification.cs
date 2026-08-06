@@ -64,10 +64,10 @@ namespace Restaurant.Domain.Specifications
             OrderByDescending = orderByDescending;
         }
 
-        protected void ApplyPaging(int skip, int take)
+        protected void ApplyPaging(int page, int pageSize)
         {
-            Skip = skip;
-            Take = take;
+            Skip = (page - 1) * pageSize;
+            Take = pageSize;
             IsPagingEnabled = true;
         }
     }
