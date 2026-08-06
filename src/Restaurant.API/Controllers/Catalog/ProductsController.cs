@@ -7,8 +7,11 @@ using Restaurant.Application.Features.Catalog.Products.Commands.Restore;
 using Restaurant.Application.Features.Catalog.Products.Commands.Update;
 using Restaurant.Application.Features.Catalog.Products.Queries.GetAll;
 using Restaurant.Application.Features.Catalog.Products.Queries.GetById;
+using Restaurant.Application.Features.Inventory.ProductStocks.Commands.UpdateQuantity;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
 using Restaurant.Contract.DTOs.Catalog.Products;
+using Restaurant.Contract.DTOs.Inventory.ProductStocks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Restaurant.API.Controllers.Catalog
@@ -86,6 +89,18 @@ namespace Restaurant.API.Controllers.Catalog
         {
             var query = new GetAllProductStocksByProductIdQuery(id);
             var result = await _mediator.Send(query, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpPatch("{productId}/branch/{branchId}/update-quantity")]
+        public async Task<IActionResult> UpdateQuantity(
+            [FromRoute] string productId,
+            [FromRoute] string branchId,
+            [FromBody] UpdateProductStockQuantityRequest body,
+            CancellationToken cancellationToken)
+        {
+            var command = new UpdateProductStockQuantityCommand(productId, branchId, body);
+            var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }
     }

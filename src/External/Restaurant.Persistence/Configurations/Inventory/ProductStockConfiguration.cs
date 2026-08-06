@@ -27,6 +27,9 @@ namespace Restaurant.Persistence.Configurations.Inventory
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
 
+            builder.HasIndex(x => new { x.BranchId, x.ProductId })
+                .IsUnique();
+
             builder.HasOne(x => x.Product)
                 .WithMany(x => x.ProductStocks)
                 .HasForeignKey(x => x.ProductId)

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Restaurant.Application.Features.Inventory.ProductStocks.Commands.UpdateQuantity;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByBranchId;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
 using Restaurant.Application.Models.Messages;
@@ -13,7 +14,9 @@ using Restaurant.Domain.Entities.Territory;
 using Restaurant.Domain.Enums;
 using Restaurant.Domain.Repositories.Catalog;
 using Restaurant.Domain.Repositories.Inventory;
+using Restaurant.Domain.Repositories.Territory;
 using System.Net;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.Persistence.Services.Inventory
 {
@@ -21,7 +24,7 @@ namespace Restaurant.Persistence.Services.Inventory
     {
         private readonly IProductStockRepository _productStockRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IBrandRepository _brandRepository;
+        private readonly IBranchRepository _branchRepository;
 
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -31,13 +34,13 @@ namespace Restaurant.Persistence.Services.Inventory
             IUnitOfWork unitOfWork,
             IProductStockRepository productStockRepository,
             IProductRepository productRepository,
-            IBrandRepository brandRepository)
+            IBranchRepository branchRepository)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _productStockRepository = productStockRepository;
             _productRepository = productRepository;
-            _brandRepository = brandRepository;
+            _branchRepository = branchRepository;
         }
 
         public async Task<Result<IEnumerable<ProductStockResponse>>> GetAllByProductIdAsync(
@@ -70,7 +73,7 @@ namespace Restaurant.Persistence.Services.Inventory
             GetAllProductStockByBranchIdSpecification specification,
             CancellationToken cancellationToken)
         {
-            var branch = await _brandRepository.FindByIdAsync(query.BranchId, cancellationToken);
+            var branch = await _branchRepository.FindByIdAsync(query.BranchId, cancellationToken);
             if(branch is null)
             {
                 return Result<IEnumerable<ProductStockResponse>>
@@ -82,6 +85,53 @@ namespace Restaurant.Persistence.Services.Inventory
             var response = _mapper.Map<IEnumerable<ProductStockResponse>>(productStocks);
             return Result<IEnumerable<ProductStockResponse>>
                 .Succeed(response, Success<ProductStock>.Retrieved);
+        }
+
+        public async Task<Result<ProductStockResponse>> UpdateQuantityAsync(
+            UpdateProductStockQuantityCommand command,
+            UpdateProductStockQuantitySpecification specification,
+            CancellationToken cancellationToken)
+        {
+            var product = await _productRepository.FindById(command.ProductId, cancellationToken);
+            if (product is null)
+            {
+                return Result<ProductStockResponse>
+                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (product.InventoryType == InventoryType.MadeToOrder)
+            {
+                return Result<ProductStockResponse>
+                    .Fail("This Product is made to order.");
+            }
+
+            var branch = await _branchRepository.FindByIdAsync(command.BranchId, cancellationToken);
+            if (branch is null)
+            {
+                return Result<ProductStockResponse>
+                    .Fail(Error<Branch>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var productStock = await _productStockRepository.FindAsync(specification, cancellationToken);
+            if(productStock is null)
+            {
+                return Result<ProductStockResponse>
+                    .Fail(Error<ProductStock>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if(productStock.QuantityOnHand - command.Body.Amount < 0)
+            {
+                return Result<ProductStockResponse>
+                    .Fail("Quantity on hand can not be negative.");
+            }
+
+            productStock.UpdateQuantity(command.Body.Amount);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var response = _mapper.Map<ProductStockResponse>(productStock);
+            return Result<ProductStockResponse>
+                .Succeed(response, Success<ProductStock>.Updated);
         }
     }
 }

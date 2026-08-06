@@ -45,9 +45,9 @@ namespace Restaurant.Domain.Entities.Inventory
             ProductId = productId;
             BranchId = branchId;
         }
-        public void UpdateQuantity(decimal newQuantity)
+        public void UpdateQuantity(decimal amount)
         {
-            QuantityOnHand = newQuantity;
+            QuantityOnHand += amount;
         }
     }
 }

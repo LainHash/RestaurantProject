@@ -13,7 +13,7 @@ namespace Restaurant.Persistence.Services.Territory
 {
     internal class BranchService : IBranchService
     {
-        private readonly IBranchRespository _branchRespository;
+        private readonly IBranchRepository _branchRespository;
 
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +21,7 @@ namespace Restaurant.Persistence.Services.Territory
         public BranchService(
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            IBranchRespository branchRespository)
+            IBranchRepository branchRespository)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
