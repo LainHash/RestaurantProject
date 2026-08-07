@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Restaurant.Application.Models.Results;
+using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.API.Extensions
 {

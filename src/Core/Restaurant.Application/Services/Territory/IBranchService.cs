@@ -1,6 +1,6 @@
 ﻿using Restaurant.Application.Features.Territory.Branches.Queries.GetAll;
-using Restaurant.Application.Models.Results;
 using Restaurant.Contract.DTOs.Territory.Branches;
+using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Services.Territory
 {

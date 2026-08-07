@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Restaurant.Application.Enums
+namespace Restaurant.Domain.Enums
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SortField

@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Restaurant.Application.Models;
-using Restaurant.Application.Models.Results;
 using Restaurant.Contract.DTOs.Catalog.Products;
+using Restaurant.Domain.Models;
+using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Features.Catalog.Products.Queries.GetAll
 {

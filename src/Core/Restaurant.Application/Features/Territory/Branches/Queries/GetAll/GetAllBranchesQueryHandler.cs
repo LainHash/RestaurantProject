@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Restaurant.Application.Models.Results;
 using Restaurant.Application.Services.Territory;
 using Restaurant.Contract.DTOs.Territory.Branches;
+using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Features.Territory.Branches.Queries.GetAll
 {

@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Territory.Branches.Queries.GetAll;
-using Restaurant.Application.Models.Messages;
-using Restaurant.Application.Models.Results;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Territory;
 using Restaurant.Contract.DTOs.Territory.Branches;
 using Restaurant.Domain.Entities.Territory;
+using Restaurant.Domain.Models.Messages;
+using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Repositories.Catalog;
 using Restaurant.Domain.Repositories.Territory;
 

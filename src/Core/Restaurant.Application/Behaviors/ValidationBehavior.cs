@@ -1,7 +1,7 @@
-﻿using Restaurant.Application.Models.Results;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using System.Net;
+using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Behaviors
 {

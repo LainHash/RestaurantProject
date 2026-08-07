@@ -2,8 +2,6 @@
 using Restaurant.Application.Features.Inventory.ProductStocks.Commands.UpdateQuantity;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByBranchId;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
-using Restaurant.Application.Models.Messages;
-using Restaurant.Application.Models.Results;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Inventory;
 using Restaurant.Contract.DTOs.Catalog.Products;
@@ -12,6 +10,8 @@ using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Inventory;
 using Restaurant.Domain.Entities.Territory;
 using Restaurant.Domain.Enums;
+using Restaurant.Domain.Models.Messages;
+using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Repositories.Catalog;
 using Restaurant.Domain.Repositories.Inventory;
 using Restaurant.Domain.Repositories.Territory;

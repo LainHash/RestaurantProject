@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Restaurant.Application.Models.Results;
 using Restaurant.Application.Services.Catalog;
 using Restaurant.Contract.DTOs.Catalog.Categories;
+using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Features.Catalog.Categories.Commands.Create
 {

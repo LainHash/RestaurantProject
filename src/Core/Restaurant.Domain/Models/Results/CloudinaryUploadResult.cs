@@ -1,4 +1,4 @@
-﻿namespace Restaurant.Application.Models.Results
+﻿namespace Restaurant.Domain.Models.Results
 {
     public class CloudinaryUploadResult
     {

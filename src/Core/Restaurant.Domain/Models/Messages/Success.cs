@@ -1,4 +1,4 @@
-﻿namespace Restaurant.Application.Models.Messages
+﻿namespace Restaurant.Domain.Models.Messages
 {
     public static class Success<TEntity> where TEntity : class
     {

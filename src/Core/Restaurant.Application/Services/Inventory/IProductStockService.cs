@@ -1,8 +1,8 @@
 ﻿using Restaurant.Application.Features.Inventory.ProductStocks.Commands.UpdateQuantity;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByBranchId;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
-using Restaurant.Application.Models.Results;
 using Restaurant.Contract.DTOs.Inventory.ProductStocks;
+using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Services.Inventory
 {

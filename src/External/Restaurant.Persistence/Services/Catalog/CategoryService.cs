@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Catalog.Categories.Commands.Create;
 using Restaurant.Application.Features.Catalog.Categories.Commands.Update;
-using Restaurant.Application.Models.Messages;
-using Restaurant.Application.Models.Results;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Catalog;
 using Restaurant.Contract.DTOs.Catalog.Categories;
 using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Models.Messages;
+using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Repositories.Catalog;
 using Restaurant.Domain.Specifications;
 using System.Net;

@@ -1,8 +1,8 @@
 using Restaurant.Application.Features.Catalog.Brands.Commands.Create;
 using Restaurant.Application.Features.Catalog.Brands.Commands.Update;
-using Restaurant.Application.Models.Results;
 using Restaurant.Contract.DTOs.Catalog.Brands;
 using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Specifications;
 
 namespace Restaurant.Application.Services.Catalog

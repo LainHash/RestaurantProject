@@ -1,6 +1,6 @@
-﻿using Restaurant.Application.Enums;
+﻿using Restaurant.Domain.Enums;
 
-namespace Restaurant.Application.Models
+namespace Restaurant.Domain.Models
 {
     public abstract record PageQuery
     {

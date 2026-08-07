@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Restaurant.Application.Enums;
 using Restaurant.Domain.Entities.Territory;
+using Restaurant.Domain.Enums;
 using Restaurant.Domain.Specifications;
 
 namespace Restaurant.Application.Features.Territory.Branches.Queries.GetAll

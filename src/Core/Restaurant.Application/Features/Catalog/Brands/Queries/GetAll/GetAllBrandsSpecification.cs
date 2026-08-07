@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Restaurant.Application.Enums;
 using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Enums;
 using Restaurant.Domain.Specifications;
 
 namespace Restaurant.Application.Features.Catalog.Brands.Queries.GetAll

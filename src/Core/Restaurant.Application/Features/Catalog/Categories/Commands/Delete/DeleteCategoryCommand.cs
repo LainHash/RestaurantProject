@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Restaurant.Application.Models.Results;
+using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Features.Catalog.Categories.Commands.Delete
 {

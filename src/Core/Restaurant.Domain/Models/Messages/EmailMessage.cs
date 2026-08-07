@@ -1,4 +1,4 @@
-namespace Restaurant.Application.Models.Messages
+namespace Restaurant.Domain.Models.Messages
 {
     public class EmailMessage
     {
