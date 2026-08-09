@@ -26,6 +26,9 @@ namespace Restaurant.Persistence.Context
         public DbSet<Image> Images { get; set; } = null!;
         public DbSet<ProductImage> ProductImages { get; set; } = null!;
 
+        public DbSet<Ingredient> Ingredients { get; set; } = null!;
+        public DbSet<IngredientPrice> IngredientPrices { get; set; } = null!;
+
         // ── Model building ──────────────────────────────────────────────────
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

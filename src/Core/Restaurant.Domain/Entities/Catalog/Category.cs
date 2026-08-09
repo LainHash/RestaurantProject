@@ -8,5 +8,6 @@ namespace Restaurant.Domain.Entities.Catalog
         public string? Description { get; private set; }
 
         public ICollection<Product> Products { get; private set; } = [];
+        public ICollection<Ingredient> Ingredients { get; private set; } = [];
     }
 }
