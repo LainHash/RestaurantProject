@@ -9,10 +9,9 @@ using Restaurant.Application.Features.Catalog.Products.Queries.GetAll;
 using Restaurant.Application.Features.Catalog.Products.Queries.GetById;
 using Restaurant.Application.Features.Inventory.ProductStocks.Commands.UpdateQuantity;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
+using Restaurant.Application.Features.Storage.Images.Queries.GetAllByProductId;
 using Restaurant.Contract.DTOs.Catalog.Products;
 using Restaurant.Contract.DTOs.Inventory.ProductStocks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Restaurant.API.Controllers.Catalog
 {
@@ -101,6 +100,16 @@ namespace Restaurant.API.Controllers.Catalog
         {
             var command = new UpdateProductStockQuantityCommand(productId, branchId, body);
             var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpGet("{id}/image-list")]
+        public async Task<IActionResult> GetAllImages(
+            [FromRoute] string id,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetAllImagesByProductIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
             return this.ToActionResult(result);
         }
     }
