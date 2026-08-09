@@ -9,7 +9,7 @@ namespace Restaurant.Persistence.Repositories.Catalog
         : Repository<Product>(context), IProductRepository
     {
         private readonly RestaurantDbContext _context = context;
-        public async Task<Product?> FindById(string id, CancellationToken cancellationToken = default)
+        public async Task<Product?> FindByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             return await _context.Products.FirstOrDefaultAsync(x => string.Equals(x.PublicId, id), cancellationToken);
         }

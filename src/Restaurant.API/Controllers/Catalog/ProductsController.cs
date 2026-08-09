@@ -9,9 +9,11 @@ using Restaurant.Application.Features.Catalog.Products.Queries.GetAll;
 using Restaurant.Application.Features.Catalog.Products.Queries.GetById;
 using Restaurant.Application.Features.Inventory.ProductStocks.Commands.UpdateQuantity;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
+using Restaurant.Application.Features.Storage.Images.Commands.Upload;
 using Restaurant.Application.Features.Storage.Images.Queries.GetAllByProductId;
 using Restaurant.Contract.DTOs.Catalog.Products;
 using Restaurant.Contract.DTOs.Inventory.ProductStocks;
+using Restaurant.Contract.DTOs.Storage.Images;
 
 namespace Restaurant.API.Controllers.Catalog
 {
@@ -103,13 +105,32 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
-        [HttpGet("{id}/image-list")]
+        [HttpGet("{id}/images")]
         public async Task<IActionResult> GetAllImages(
             [FromRoute] string id,
             CancellationToken cancellationToken)
         {
             var query = new GetAllImagesByProductIdQuery(id);
             var result = await _mediator.Send(query, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpPost("{id}/images")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadImage(
+            [FromRoute] string id,
+            IFormFile file,
+            [FromForm] UploadImageRequest metadata,
+            CancellationToken cancellationToken)
+        {
+            if (file is null || file.Length == 0)
+                return BadRequest("File ảnh không được để trống.");
+
+            await using var stream = file.OpenReadStream();
+
+            var command = new UploadProductImageCommand(id, stream, file.FileName, metadata);
+
+            var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }
     }

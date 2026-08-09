@@ -1,7 +1,8 @@
 using DotNetEnv;
 using Microsoft.OpenApi.Models;
-using Restaurant.Persistence;
 using Restaurant.Application;
+using Restaurant.Infrastructure;
+using Restaurant.Persistence;
 using System.Text.Json.Serialization;
 
 Env.Load();
@@ -20,6 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
 builder.Services.AddHttpClient();

@@ -4,6 +4,6 @@ namespace Restaurant.Domain.Repositories.Catalog
 {
     public interface IProductRepository : IRepository<Product>
     {
-        Task<Product?> FindById(string id, CancellationToken cancellationToken = default);
+        Task<Product?> FindByIdAsync(string id, CancellationToken cancellationToken = default);
     }
 }

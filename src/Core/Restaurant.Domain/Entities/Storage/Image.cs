@@ -31,6 +31,12 @@ namespace Restaurant.Domain.Entities.Storage
             ContentType = contentType;
         }
 
+        public Image SetAltText(string altText)
+        {
+            AltText = altText;
+            return this;
+        }
+
         public static Image Create(string altText, string url, string storagePath, long fileSize, string contentType)
         {
             return new Image(altText, url, storagePath, fileSize, contentType);

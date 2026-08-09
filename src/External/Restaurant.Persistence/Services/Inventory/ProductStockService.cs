@@ -48,7 +48,7 @@ namespace Restaurant.Persistence.Services.Inventory
             GetAllProductStocksByProductIdSpecification specification,
             CancellationToken cancellationToken)
         {
-            var product = await _productRepository.FindById(query.ProductId, cancellationToken);
+            var product = await _productRepository.FindByIdAsync(query.ProductId, cancellationToken);
             if (product is null)
             {
                 return Result<IEnumerable<ProductStockResponse>>
@@ -92,7 +92,7 @@ namespace Restaurant.Persistence.Services.Inventory
             UpdateProductStockQuantitySpecification specification,
             CancellationToken cancellationToken)
         {
-            var product = await _productRepository.FindById(command.ProductId, cancellationToken);
+            var product = await _productRepository.FindByIdAsync(command.ProductId, cancellationToken);
             if (product is null)
             {
                 return Result<ProductStockResponse>
