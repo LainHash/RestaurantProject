@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 .env
 src/External/Restaurant.Persistence/Migrations
+*.xlsx#

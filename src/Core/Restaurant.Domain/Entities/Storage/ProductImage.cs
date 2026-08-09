@@ -36,5 +36,17 @@ namespace Restaurant.Domain.Entities.Storage
         {
             IsPrimary = false;
         }
+
+        public ProductImage SetProduct(int productId)
+        {
+            ProductId = productId;
+            return this;
+        }
+
+        public ProductImage SetImage(int imageId)
+        {
+            ImageId = imageId;
+            return this;
+        }
     }
 }

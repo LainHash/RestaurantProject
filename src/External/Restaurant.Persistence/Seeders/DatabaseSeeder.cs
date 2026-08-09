@@ -1,8 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
+using Restaurant.Domain.Entities.Storage;
 using Restaurant.Persistence.Context;
 using Restaurant.Persistence.Seeders.Catalog;
 using Restaurant.Persistence.Seeders.Inventory;
 using Restaurant.Persistence.Seeders.Pricing;
+using Restaurant.Persistence.Seeders.Storage;
 using Restaurant.Persistence.Seeders.Territory;
 
 namespace Restaurant.Persistence.Seeders
@@ -24,6 +26,9 @@ namespace Restaurant.Persistence.Seeders
             await SeedAsync<ProductSeeder>(_context);
             await SeedAsync<ProductPriceSeeder>(_context);
             await SeedAsync<ProductStockSeeder>(_context);
+
+            await SeedAsync<ImageSeeder>(_context);
+            await SeedAsync<ProductImageSeeder>(_context);
         }
 
         private async Task SeedAsync<TSeeder>(RestaurantDbContext context) where TSeeder : IDataSeeder
