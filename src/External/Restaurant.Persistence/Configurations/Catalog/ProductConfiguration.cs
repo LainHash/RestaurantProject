@@ -38,7 +38,7 @@ namespace Restaurant.Persistence.Configurations.Catalog
                 .HasForeignKey(x => x.BrandId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(x => x.Category)
+            builder.HasOne(x => x.ProductCategory)
                 .WithMany(x => x.Products)
                 .HasForeignKey(x => x.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);

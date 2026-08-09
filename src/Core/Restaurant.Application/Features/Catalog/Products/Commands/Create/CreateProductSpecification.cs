@@ -8,7 +8,7 @@ namespace Restaurant.Application.Features.Catalog.Products.Commands.Create
     {
         public CreateProductSpecification(CreateProductCommand command)
         {
-            AddInclude(p => p.Category);
+            AddInclude(p => p.ProductCategory);
             AddInclude(p => p.Brand!);
             AddInclude(p => p.ProductPrice);
         }

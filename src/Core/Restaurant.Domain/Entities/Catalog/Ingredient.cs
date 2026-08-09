@@ -14,7 +14,6 @@ namespace Restaurant.Domain.Entities.Catalog
         public int? BrandId { get; private set; }
 
         public Unit BaseUnit { get; private set; } = null!;
-        public Category Category { get; private set; } = null!;
         public Brand? Brand { get; private set; }
         public IngredientPrice IngredientPrice { get; private set; } = null!;
     }

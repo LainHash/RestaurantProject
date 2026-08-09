@@ -51,7 +51,7 @@ namespace Restaurant.Persistence
             // ── Repositories ─────────────────────────────────────────────────
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            var assembly = typeof(CategoryRepository).Assembly;
+            var assembly = typeof(ProductCategoryRepository).Assembly;
 
             foreach (var type in assembly.GetTypes())
             {
@@ -74,7 +74,7 @@ namespace Restaurant.Persistence
             services.AddScoped<IDataImporter, ExcelImporter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductCategoryService, ProductCategoryService>();
             services.AddScoped<IBrandService, BrandService>();
 
             services.AddScoped<IBranchService, BranchService>();

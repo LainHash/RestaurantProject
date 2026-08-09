@@ -1,25 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Restaurant.Domain.Entities.Catalog;
-using Restaurant.Domain.Entities.Storage;
 using Restaurant.Domain.Enums;
 using Restaurant.Domain.Specifications;
 
-namespace Restaurant.Application.Features.Catalog.Products.Queries.GetAll
+namespace Restaurant.Application.Features.Catalog.ProductCategories.Queries.GetAll
 {
-    public class GetAllProductsSpecification
-        : BaseSpecification<Product>
+    public class GetAllProductCategoriesSpecification
+        : BaseSpecification<ProductCategory>
     {
-        public GetAllProductsSpecification(GetAllProductsQuery query)
+        public GetAllProductCategoriesSpecification(GetAllProductCategoriesQuery query)
         {
             EnableSoftDeleteFilter();
-
-            AddInclude(p => p.ProductCategory);
-            AddInclude(p => p.Unit);
-            AddInclude(p => p.Brand!);
-            AddInclude(p => p.ProductPrice);
-            AddIncludeAggregator(x => x.Include(p => p.ProductImages)
-                                        .ThenInclude((ProductImage pi) => pi.Image));
-
 
             if (!string.IsNullOrWhiteSpace(query.Keyword))
             {
@@ -41,12 +32,6 @@ namespace Restaurant.Application.Features.Catalog.Products.Queries.GetAll
                         ApplyOrderBy(p => p.Name);
                     else
                         ApplyOrderByDescending(p => p.Name);
-                    break;
-                case SortField.Price:
-                    if (query.Direction == SortDirection.Asc)
-                        ApplyOrderBy(p => p.ProductPrice!.UnitPrice);
-                    else
-                        ApplyOrderByDescending(p => p.ProductPrice!.UnitPrice);
                     break;
             }
 

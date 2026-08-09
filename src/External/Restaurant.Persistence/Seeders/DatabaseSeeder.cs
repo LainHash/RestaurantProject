@@ -18,7 +18,7 @@ namespace Restaurant.Persistence.Seeders
 
         public async Task SeedAllAsync()
         {
-            await SeedAsync<CategorySeeder>(_context);
+            await SeedAsync<ProductCategorySeeder>(_context);
             await SeedAsync<BrandSeeder>(_context);
 
             await SeedAsync<UnitSeeder>(_context);

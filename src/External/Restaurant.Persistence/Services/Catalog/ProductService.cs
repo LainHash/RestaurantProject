@@ -17,7 +17,7 @@ namespace Restaurant.Persistence.Services.Catalog
     internal class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductCategoryRepository _categoryRepository;
         private readonly IBrandRepository _brandRepository;
 
         private readonly IMapper _mapper;
@@ -27,7 +27,7 @@ namespace Restaurant.Persistence.Services.Catalog
             IProductRepository productRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            ICategoryRepository categoryRepository,
+            IProductCategoryRepository categoryRepository,
             IBrandRepository brandRepository)
         {
             _productRepository = productRepository;
@@ -75,7 +75,7 @@ namespace Restaurant.Persistence.Services.Catalog
             if(category is null)
             {
                 return Result<ProductResponse>
-                    .Fail(Error<Category>.NotFound, HttpStatusCode.NotFound);
+                    .Fail(Error<ProductCategory>.NotFound, HttpStatusCode.NotFound);
             }
 
             Brand? brand = null;
@@ -114,7 +114,7 @@ namespace Restaurant.Persistence.Services.Catalog
             if (category is null)
             {
                 return Result<ProductResponse>
-                    .Fail(Error<Category>.NotFound, HttpStatusCode.NotFound);
+                    .Fail(Error<ProductCategory>.NotFound, HttpStatusCode.NotFound);
             }
 
             Brand? brand = null;

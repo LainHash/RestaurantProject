@@ -12,7 +12,7 @@ namespace Restaurant.Persistence.Context
     internal class RestaurantDbContext(DbContextOptions<RestaurantDbContext> options)
         : DbContext(options)
     {
-        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<ProductCategory> ProductCategories { get; set; } = null!;
         public DbSet<Brand> Brands { get; set; } = null!;
 
         public DbSet<Unit> Units { get; set; } = null!;
