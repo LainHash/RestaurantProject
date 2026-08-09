@@ -9,5 +9,6 @@
 
         public string BrandName { get; set; } = null!;
         public string CategoryName { get; set; } = null!;
+        public string UnitName { get; set; } = null!;
     }
 }

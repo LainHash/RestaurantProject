@@ -21,6 +21,8 @@ namespace Restaurant.Persistence.Seeders
             await SeedAsync<CategorySeeder>(_context);
             await SeedAsync<BrandSeeder>(_context);
 
+            await SeedAsync<UnitSeeder>(_context);
+
             await SeedAsync<BranchSeeder>(_context);
 
             await SeedAsync<ProductSeeder>(_context);

@@ -14,6 +14,7 @@ namespace Restaurant.Application.Features.Catalog.Products.Queries.GetAll
             EnableSoftDeleteFilter();
 
             AddInclude(p => p.Category);
+            AddInclude(p => p.Unit);
             AddInclude(p => p.Brand!);
             AddInclude(p => p.ProductPrice);
             AddIncludeAggregator(x => x.Include(p => p.ProductImages)

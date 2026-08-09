@@ -15,6 +15,7 @@ namespace Restaurant.Application.Features.Catalog.Products.Queries.GetById
             Criteria = p => string.Equals(p.PublicId, query.Id);
 
             AddInclude(p => p.Category);
+            AddInclude(p => p.Unit);
             AddInclude(p => p.Brand!);
             AddInclude(p => p.ProductPrice);
             AddIncludeAggregator(x => x.Include(p => p.ProductImages)

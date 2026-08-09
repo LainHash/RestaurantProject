@@ -6,7 +6,6 @@ namespace Restaurant.Domain.Entities.Inventory
 {
     public partial class ProductStock : SoftDeletableEntity
     {
-        public string Unit { get; private set; } = string.Empty;
         public decimal QuantityOnHand { get; private set; }
 
         public int ProductId { get; private set; }
@@ -38,9 +37,8 @@ namespace Restaurant.Domain.Entities.Inventory
             return this;
         }
 
-        public ProductStock(string unit, decimal quantityOnHand, int productId, int branchId)
+        public ProductStock(decimal quantityOnHand, int productId, int branchId)
         {
-            Unit = unit;
             QuantityOnHand = quantityOnHand;
             ProductId = productId;
             BranchId = branchId;

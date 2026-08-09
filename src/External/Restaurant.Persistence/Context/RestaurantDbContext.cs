@@ -15,6 +15,8 @@ namespace Restaurant.Persistence.Context
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Brand> Brands { get; set; } = null!;
 
+        public DbSet<Unit> Units { get; set; } = null!;
+
         public DbSet<Branch> Branches { get; set; } = null!;
 
         public DbSet<Product> Products { get; set; } = null!;

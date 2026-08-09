@@ -19,10 +19,6 @@ namespace Restaurant.Persistence.Configurations.Inventory
             builder.Property(x => x.PublicId)
                 .IsRequired();
 
-            builder.Property(x => x.Unit)
-                .IsRequired()
-                .HasMaxLength(50);
-
             builder.Property(x => x.QuantityOnHand)
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");

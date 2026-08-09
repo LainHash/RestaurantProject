@@ -2,6 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Restaurant.Application.Services.Storage;
+using Restaurant.Contract.Settings.Storage;
+using Restaurant.Infrastructure.Services.Storage;
 
 namespace Restaurant.Infrastructure
 {
@@ -12,9 +15,9 @@ namespace Restaurant.Infrastructure
             IConfiguration configuration)
         {
             // ── Cloudinary ───────────────────────────────────────────────────
-            //services.Configure<CloudinarySettings>(
-            //    configuration.GetSection(CloudinarySettings.SectionName));
-            //services.AddScoped<ICloudinaryService, CloudinaryService>();
+            services.Configure<CloudinarySettings>(
+                configuration.GetSection(CloudinarySettings.SectionName));
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
 
             // ── Authentication & Security ────────────────────────────────────
             //services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));

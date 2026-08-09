@@ -14,10 +14,12 @@ namespace Restaurant.Domain.Entities.Catalog
 
         public int? BrandId { get; private set; }
         public int CategoryId { get; private set; }
+        public int UnitId { get; private set; }
 
         public Brand? Brand { get; private set; }
         public Category Category { get; private set; } = null!;
-        
+        public Unit Unit { get; private set; } = null!;
+
         public ProductPrice ProductPrice { get; private set; } = null!;
         public ICollection<ProductStock> ProductStocks { get; private set; } = [];
         public ICollection<ProductImage> ProductImages { get; private set; } = [];
@@ -34,6 +36,12 @@ namespace Restaurant.Domain.Entities.Catalog
         public Product SetCategory(int categoryId)
         {
             CategoryId = categoryId;
+            return this;
+        }
+
+        public Product SetUnit(int unitId)
+        {
+            UnitId = unitId;
             return this;
         }
     }

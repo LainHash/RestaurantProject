@@ -22,15 +22,20 @@ namespace Restaurant.Persistence.Seeders.Catalog
             var categories = await context.Categories
                 .Select(x => new { x.Id, x.Name })
                 .ToListAsync();
-
             var categoriesDictionary = categories.ToDictionary(
                 x => x.Name,
                 StringComparer.OrdinalIgnoreCase);
 
             var brands = await context.Brands
                 .ToListAsync();
-
             var brandsDictionary = brands.ToDictionary(
+                x => x.Name,
+                StringComparer.OrdinalIgnoreCase);
+
+            var units = await context.Units
+                .Select(x => new { x.Id, x.Name })
+                .ToListAsync();
+            var unitsDictionary = units.ToDictionary(
                 x => x.Name,
                 StringComparer.OrdinalIgnoreCase);
 
@@ -45,6 +50,9 @@ namespace Restaurant.Persistence.Seeders.Catalog
                 if (!categoriesDictionary.TryGetValue(record.CategoryName.ToLower(), out var category)) 
                     throw new Exception($"Category '{record.CategoryName}' not found.");
 
+                if (!unitsDictionary.TryGetValue(record.UnitName.ToLower(), out var unit))
+                    throw new Exception($"Unit '{record.UnitName}' not found.");
+
                 if (!string.IsNullOrWhiteSpace(record.BrandName))
                 {
                     brandsDictionary.TryGetValue(record.BrandName, out brand);
@@ -52,7 +60,8 @@ namespace Restaurant.Persistence.Seeders.Catalog
 
                 var product = _mapper.Map<Product>(record)
                     .SetCategory(category.Id)
-                    .SetBrand(brand?.Id);
+                    .SetBrand(brand?.Id)
+                    .SetUnit(unit.Id);
 
                 context.Products.Add(product);
             }
