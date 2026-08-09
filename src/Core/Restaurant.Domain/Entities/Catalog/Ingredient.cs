@@ -4,7 +4,7 @@ using Restaurant.Domain.Entities.Pricing;
 
 namespace Restaurant.Domain.Entities.Catalog
 {
-    public class Ingredient : SoftDeletableEntity
+    public partial class Ingredient : SoftDeletableEntity
     {
         public string Name { get; private set; } = string.Empty;
         public string? Description { get; private set; }
@@ -17,5 +17,26 @@ namespace Restaurant.Domain.Entities.Catalog
         public Category Category { get; private set; } = null!;
         public Brand? Brand { get; private set; }
         public IngredientPrice IngredientPrice { get; private set; } = null!;
+    }
+
+    public partial class Ingredient
+    {
+        public Ingredient SetBrand(int? brandId)
+        {
+            BrandId = brandId;
+            return this;
+        }
+
+        public Ingredient SetCategory(int categoryId)
+        {
+            CategoryId = categoryId;
+            return this;
+        }
+
+        public Ingredient SetUnit(int unitId)
+        {
+            BaseUnitId = unitId;
+            return this;
+        }
     }
 }
