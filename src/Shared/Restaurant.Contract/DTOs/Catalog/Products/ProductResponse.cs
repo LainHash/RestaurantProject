@@ -1,4 +1,5 @@
-﻿using Restaurant.Domain.Enums;
+﻿using Restaurant.Contract.DTOs.Storage.Images;
+using Restaurant.Domain.Enums;
 
 namespace Restaurant.Contract.DTOs.Catalog.Products
 {
@@ -13,5 +14,7 @@ namespace Restaurant.Contract.DTOs.Catalog.Products
         public string CategoryName { get; set; } = string.Empty;
 
         public decimal UnitPrice { get; set; }
+
+        public ImageResponse PrimaryImage { get; set; } = null!;
     }
 }
