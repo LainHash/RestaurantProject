@@ -29,6 +29,7 @@ namespace Restaurant.Persistence.Context
 
         public DbSet<Ingredient> Ingredients { get; set; } = null!;
         public DbSet<IngredientPrice> IngredientPrices { get; set; } = null!;
+        public DbSet<IngredientStock> IngredientStocks { get; set; } = null!;
 
         // ── Model building ──────────────────────────────────────────────────
         protected override void OnModelCreating(ModelBuilder modelBuilder)
