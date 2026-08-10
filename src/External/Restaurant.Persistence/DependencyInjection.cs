@@ -75,6 +75,7 @@ namespace Restaurant.Persistence
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IProductCategoryService, ProductCategoryService>();
+            services.AddScoped<IIngredientCategoryService, IngredientCategoryService>();
             services.AddScoped<IBrandService, BrandService>();
 
             services.AddScoped<IBranchService, BranchService>();
