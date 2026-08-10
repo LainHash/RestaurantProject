@@ -13,6 +13,7 @@ namespace Restaurant.Persistence.Context
         : DbContext(options)
     {
         public DbSet<ProductCategory> ProductCategories { get; set; } = null!;
+        public DbSet<IngredientCategory> IngredientCategories { get; set; } = null!;
         public DbSet<Brand> Brands { get; set; } = null!;
 
         public DbSet<Unit> Units { get; set; } = null!;

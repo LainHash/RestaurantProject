@@ -4,12 +4,12 @@ using Restaurant.Domain.Entities.Catalog;
 
 namespace Restaurant.Persistence.Configurations.Catalog
 {
-    internal class IngredientConfiguration
-        : IEntityTypeConfiguration<Ingredient>
+    internal class IngredientCategoryConfiguration
+        : IEntityTypeConfiguration<IngredientCategory>
     {
-        public void Configure(EntityTypeBuilder<Ingredient> builder)
+        public void Configure(EntityTypeBuilder<IngredientCategory> builder)
         {
-            builder.ToTable("Ingredients");
+            builder.ToTable("IngredientCategories");
 
             builder.HasKey(x => x.Id);
 
@@ -21,23 +21,13 @@ namespace Restaurant.Persistence.Configurations.Catalog
 
             builder.Property(x => x.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(50);
 
             builder.HasIndex(x => x.Name)
                 .IsUnique();
 
             builder.Property(x => x.Description)
                 .HasMaxLength(1000);
-
-            builder.HasOne(x => x.Brand)
-                .WithMany(x => x.Ingredients)
-                .HasForeignKey(x => x.BrandId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            builder.HasOne(x => x.IngredientCategory)
-                .WithMany(x => x.Ingredients)
-                .HasForeignKey(x => x.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
