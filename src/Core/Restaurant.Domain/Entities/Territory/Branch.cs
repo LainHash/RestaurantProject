@@ -23,5 +23,6 @@ namespace Restaurant.Domain.Entities.Territory
         public TimeOnly CloseTime { get; private set; }
 
         public ICollection<ProductStock> ProductStocks { get; private set; } = [];
+        public ICollection<IngredientStock> IngredientStocks { get; private set; } = [];
     }
 }

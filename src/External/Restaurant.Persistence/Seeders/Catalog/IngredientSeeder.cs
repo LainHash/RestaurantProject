@@ -19,7 +19,7 @@ namespace Restaurant.Persistence.Seeders.Catalog
             if (await context.Ingredients.AnyAsync())
                 return;
 
-            var categories = await context.ProductCategories
+            var categories = await context.IngredientCategories
                 .Select(x => new { x.Id, x.Name })
                 .ToListAsync();
             var categoriesDictionary = categories.ToDictionary(

@@ -19,11 +19,11 @@ namespace Restaurant.Persistence.Seeders.Pricing
             if (await context.IngredientPrices.AnyAsync())
                 return;
 
-            var products = await context.Products
+            var ingredients = await context.Ingredients
                 .Select(x => new { x.Id, x.Name })
                 .ToListAsync();
 
-            var productDictionary = products.ToDictionary(
+            var ingredientsDictionary = ingredients.ToDictionary(
                 x => x.Name.ToLower(),
                 StringComparer.OrdinalIgnoreCase);
 
@@ -32,7 +32,7 @@ namespace Restaurant.Persistence.Seeders.Pricing
 
             foreach (var record in records)
             {
-                if (!productDictionary.TryGetValue(record.IngredientName, out var ingredient))
+                if (!ingredientsDictionary.TryGetValue(record.IngredientName, out var ingredient))
                     throw new Exception($"Ingredient '{record.IngredientName}' not found.");
 
                 var price = _mapper.Map<IngredientPrice>(record)
