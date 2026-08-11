@@ -4,11 +4,14 @@ using Restaurant.Application.Features.Catalog.Products.Commands.Create;
 using Restaurant.Application.Features.Catalog.Products.Commands.Update;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Catalog;
+using Restaurant.Contract.DTOs.Catalog.Ingredients;
 using Restaurant.Contract.DTOs.Catalog.Products;
 using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Entities.Inventory;
 using Restaurant.Domain.Models.Messages;
 using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Repositories.Catalog;
+using Restaurant.Domain.Repositories.Inventory;
 using Restaurant.Domain.Specifications;
 using System.Net;
 
@@ -19,6 +22,7 @@ namespace Restaurant.Persistence.Services.Catalog
         private readonly IProductRepository _productRepository;
         private readonly IProductCategoryRepository _categoryRepository;
         private readonly IBrandRepository _brandRepository;
+        private readonly IUnitRepository _unitRepository;
 
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -28,13 +32,15 @@ namespace Restaurant.Persistence.Services.Catalog
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IProductCategoryRepository categoryRepository,
-            IBrandRepository brandRepository)
+            IBrandRepository brandRepository,
+            IUnitRepository unitRepository)
         {
             _productRepository = productRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _categoryRepository = categoryRepository;
             _brandRepository = brandRepository;
+            _unitRepository = unitRepository;
         }
 
         public async Task<PageResult<IEnumerable<ProductResponse>>> GetAllAsync(
@@ -90,9 +96,18 @@ namespace Restaurant.Persistence.Services.Catalog
                 }
             }
 
+            var unit = await _unitRepository.FindByIdAsync(request.UnitId, cancellationToken);
+            if (unit is null)
+            {
+                return Result<ProductResponse>
+                    .Fail(Error<Unit>.NotFound, HttpStatusCode.NotFound);
+            }
+
             var product = _mapper.Map<Product>(request)
                 .SetCategory(category.Id)
-                .SetBrand(brand?.Id);
+                .SetBrand(brand?.Id)
+                .SetUnit(unit.Id);
+
             _productRepository.Add(product);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -129,6 +144,13 @@ namespace Restaurant.Persistence.Services.Catalog
                 }
             }
 
+            var unit = await _unitRepository.FindByIdAsync(request.UnitId, cancellationToken);
+            if (unit is null)
+            {
+                return Result<ProductResponse>
+                    .Fail(Error<Unit>.NotFound, HttpStatusCode.NotFound);
+            }
+
             var product = await _productRepository.FindAsync(specification, cancellationToken);
             if(product is null)
             {
@@ -138,7 +160,8 @@ namespace Restaurant.Persistence.Services.Catalog
 
             _mapper.Map(request, product)
                 .SetCategory(category.Id)
-                .SetBrand(brand?.Id);
+                .SetBrand(brand?.Id)
+                .SetUnit(unit.Id);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

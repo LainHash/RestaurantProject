@@ -10,6 +10,7 @@ namespace Restaurant.Contract.DTOs.Catalog.Products
 
         public string? BrandId { get; set; } = string.Empty;
         public string CategoryId { get; set; } = string.Empty;
+        public string UnitId { get; set; } = string.Empty;
 
         public decimal UnitPrice { get; set; }
     }
