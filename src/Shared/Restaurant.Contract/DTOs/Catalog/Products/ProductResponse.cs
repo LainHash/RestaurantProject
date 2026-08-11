@@ -13,7 +13,7 @@ namespace Restaurant.Contract.DTOs.Catalog.Products
         public string? BrandName { get; set; } = string.Empty;
         public string CategoryName { get; set; } = string.Empty;
 
-        public string UnitName { get; set; } = string.Empty;
+        public string Unit { get; set; } = string.Empty;
         public decimal UnitPrice { get; set; }
 
         public ImageResponse PrimaryImage { get; set; } = null!;

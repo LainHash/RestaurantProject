@@ -13,7 +13,7 @@ namespace Restaurant.Persistence.Mapping.Production
 
             CreateMap<RecipeIngredient, RecipeIngredientResponse>()
                 .ForMember(dest => dest.IngredientName, opt => opt.MapFrom(src => src.Ingredient.Name))
-                .ForMember(dest => dest.UnitName, opt => opt.MapFrom(src => src.Unit.Name));
+                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Unit.Symbol));
         }
     }
 }

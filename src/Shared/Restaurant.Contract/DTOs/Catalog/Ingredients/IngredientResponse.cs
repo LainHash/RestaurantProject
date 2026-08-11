@@ -9,7 +9,7 @@ namespace Restaurant.Contract.DTOs.Catalog.Ingredients
         public string? BrandName { get; set; }
         public string CategoryName { get; set; } = string.Empty;
 
-        public string UnitName { get; set; } = string.Empty;
+        public string Unit { get; set; } = string.Empty;
         public decimal UnitPrice { get; set; }
     }
 }

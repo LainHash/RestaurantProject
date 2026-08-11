@@ -4,6 +4,6 @@
     {
         public string IngredientName { get; set; } = string.Empty;
         public decimal Quantity { get; set; }
-        public string UnitName { get; set; } = string.Empty;
+        public string Unit { get; set; } = string.Empty;
     }
 }
