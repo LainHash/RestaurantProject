@@ -42,6 +42,16 @@ namespace Restaurant.Persistence.Configurations.Inventory
                 .WithOne(x => x.Unit)
                 .HasForeignKey(x => x.UnitId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.Ingredients)
+                .WithOne(x => x.BaseUnit)
+                .HasForeignKey(x => x.BaseUnitId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.RecipeIngredients)
+                .WithOne(x => x.Unit)
+                .HasForeignKey(x => x.UnitId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

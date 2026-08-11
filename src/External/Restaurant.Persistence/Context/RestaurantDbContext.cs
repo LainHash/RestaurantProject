@@ -3,6 +3,7 @@ using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Inventory;
 using Restaurant.Domain.Entities.Pricing;
+using Restaurant.Domain.Entities.Production;
 using Restaurant.Domain.Entities.Storage;
 using Restaurant.Domain.Entities.Territory;
 using System.Reflection;
@@ -30,6 +31,9 @@ namespace Restaurant.Persistence.Context
         public DbSet<Ingredient> Ingredients { get; set; } = null!;
         public DbSet<IngredientPrice> IngredientPrices { get; set; } = null!;
         public DbSet<IngredientStock> IngredientStocks { get; set; } = null!;
+
+        public DbSet<Recipe> Recipes { get; set; } = null!;
+        public DbSet<RecipeIngredient> RecipeIngredients { get; set; } = null!;
 
         // ── Model building ──────────────────────────────────────────────────
         protected override void OnModelCreating(ModelBuilder modelBuilder)

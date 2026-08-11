@@ -1,6 +1,7 @@
 ﻿using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Inventory;
 using Restaurant.Domain.Entities.Pricing;
+using Restaurant.Domain.Entities.Production;
 
 namespace Restaurant.Domain.Entities.Catalog
 {
@@ -18,6 +19,8 @@ namespace Restaurant.Domain.Entities.Catalog
         public IngredientCategory IngredientCategory { get; private set; } = null!;
         public IngredientPrice IngredientPrice { get; private set; } = null!;
         public ICollection<IngredientStock> IngredientStocks { get; private set; } = [];
+
+        public ICollection<RecipeIngredient> RecipeIngredients { get; private set; } = [];
     }
 
     public partial class Ingredient

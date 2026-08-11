@@ -1,5 +1,6 @@
 ﻿using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Entities.Production;
 using Restaurant.Domain.Enums;
 
 namespace Restaurant.Domain.Entities.Inventory
@@ -14,5 +15,7 @@ namespace Restaurant.Domain.Entities.Inventory
         public decimal ConversionRate { get; private set; }
 
         public ICollection<Product> Products { get; private set; } = [];
+        public ICollection<Ingredient> Ingredients { get; private set; } = [];
+        public ICollection<RecipeIngredient> RecipeIngredients { get; private set; } = [];
     }
 }
