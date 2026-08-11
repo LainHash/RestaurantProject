@@ -4,7 +4,7 @@ using Restaurant.Domain.Entities.Inventory;
 
 namespace Restaurant.Domain.Entities.Production
 {
-    public class RecipeIngredient : SoftDeletableEntity
+    public partial class RecipeIngredient : SoftDeletableEntity
     {
         public int RecipeId { get; private set; }
         public int IngredientId { get; private set; }
@@ -16,5 +16,26 @@ namespace Restaurant.Domain.Entities.Production
         public Recipe Recipe { get; private set; } = null!;
         public Ingredient Ingredient { get; private set; } = null!;
         public Unit Unit { get; private set; } = null!;
+    }
+
+    public partial class RecipeIngredient
+    {
+        public RecipeIngredient SetIngredient(int ingredientId)
+        {
+            IngredientId = ingredientId;
+            return this;
+        }
+
+        public RecipeIngredient SetRecipe(int recipeId)
+        {
+            RecipeId = recipeId;
+            return this;
+        }
+
+        public RecipeIngredient SetUnit(int unitId)
+        {
+            UnitId = unitId;
+            return this;
+        }
     }
 }

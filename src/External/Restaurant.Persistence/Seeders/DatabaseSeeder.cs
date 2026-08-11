@@ -4,6 +4,7 @@ using Restaurant.Persistence.Context;
 using Restaurant.Persistence.Seeders.Catalog;
 using Restaurant.Persistence.Seeders.Inventory;
 using Restaurant.Persistence.Seeders.Pricing;
+using Restaurant.Persistence.Seeders.Production;
 using Restaurant.Persistence.Seeders.Storage;
 using Restaurant.Persistence.Seeders.Territory;
 
@@ -36,6 +37,9 @@ namespace Restaurant.Persistence.Seeders
 
             await SeedAsync<ImageSeeder>(_context);
             await SeedAsync<ProductImageSeeder>(_context);
+
+            await SeedAsync<RecipeSeeder>(_context);
+            await SeedAsync<RecipeIngredientSeeder>(_context);
         }
 
         private async Task SeedAsync<TSeeder>(RestaurantDbContext context) where TSeeder : IDataSeeder

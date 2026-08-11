@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Restaurant.Contract.DTOs.Production.Recipes;
 using Restaurant.Domain.Entities.Production;
+using Restaurant.Persistence.DataRecords.Production;
 
 namespace Restaurant.Persistence.Mapping.Production
 {
@@ -8,6 +9,8 @@ namespace Restaurant.Persistence.Mapping.Production
     {
         public RecipeMapping()
         {
+            CreateMap<RecipeRecord, Recipe>();
+
             CreateMap<Recipe, RecipeResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
