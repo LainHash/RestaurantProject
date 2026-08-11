@@ -10,4 +10,8 @@
 		<PackageReference Include="Nanoid" Version="3.1.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Repositories\Production\" />
+	</ItemGroup>
+
 </Project>

@@ -3,6 +3,6 @@
     internal class RecipeRecord
     {
         public string ProductName { get; set; } = string.Empty;
-        public string? Instruction { get; set; }
+        public string? Instructions { get; set; }
     }
 }
