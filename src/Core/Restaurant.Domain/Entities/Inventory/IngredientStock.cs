@@ -1,4 +1,4 @@
-﻿using Restaurant.Domain.Abstraction;
+using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Territory;
 
@@ -27,6 +27,11 @@ namespace Restaurant.Domain.Entities.Inventory
         {
             BranchId = branchId;
             return this;
+        }
+
+        public void UpdateQuantity(decimal amount)
+        {
+            QuantityOnHand += amount;
         }
     }
 }

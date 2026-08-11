@@ -81,8 +81,10 @@ namespace Restaurant.Persistence
             services.AddScoped<IBranchService, BranchService>();
 
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IIngredientService, IngredientService>();
 
             services.AddScoped<IProductStockService, ProductStockService>();
+            services.AddScoped<IIngredientStockService, IngredientStockService>();
 
             services.AddScoped<IImageService, ImageService>();
 

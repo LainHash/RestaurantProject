@@ -15,6 +15,7 @@ using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Repositories.Catalog;
 using Restaurant.Domain.Repositories.Inventory;
 using Restaurant.Domain.Repositories.Territory;
+using Restaurant.Domain.Specifications;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -112,12 +113,12 @@ namespace Restaurant.Persistence.Services.Inventory
                     .Fail(Error<Branch>.NotFound, HttpStatusCode.NotFound);
             }
 
-            var productStock = await _productStockRepository.FindAsync(specification, cancellationToken);
-            if(productStock is null)
-            {
-                return Result<ProductStockResponse>
-                    .Fail(Error<ProductStock>.NotFound, HttpStatusCode.NotFound);
-            }
+            var productStock = await GetOrCreateAsync(
+                specification,
+                () => new ProductStock()
+                    .SetProduct(product.Id)
+                    .SetBranch(branch.Id),
+                cancellationToken);
 
             if(productStock.QuantityOnHand - command.Body.Amount < 0)
             {
@@ -132,6 +133,31 @@ namespace Restaurant.Persistence.Services.Inventory
             var response = _mapper.Map<ProductStockResponse>(productStock);
             return Result<ProductStockResponse>
                 .Succeed(response, Success<ProductStock>.Updated);
+        }
+
+        private async Task<ProductStock> InitializeAsync(
+            Func<ProductStock> factory,
+            CancellationToken cancellationToken)
+        {
+            var productStock = factory();
+
+            _productStockRepository.Add(productStock);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return productStock;
+        }
+
+        private async Task<ProductStock> GetOrCreateAsync(
+            ISpecification<ProductStock> specification,
+            Func<ProductStock> factory,
+            CancellationToken cancellationToken)
+        {
+            var productStock = await _productStockRepository.FindAsync(specification, cancellationToken);
+
+            if (productStock is not null)
+                return productStock;
+
+            return await InitializeAsync(factory, cancellationToken);
         }
     }
 }
