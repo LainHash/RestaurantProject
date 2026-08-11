@@ -1,4 +1,5 @@
 ﻿using Restaurant.Application.Features.Production.Recipes.Queries.GetAll;
+using Restaurant.Application.Features.Production.Recipes.Queries.GetAllByProductId;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetById;
 using Restaurant.Contract.DTOs.Production.Recipes;
 using Restaurant.Domain.Models.Results;
@@ -13,6 +14,11 @@ namespace Restaurant.Application.Services.Production
 
         Task<Result<RecipeResponse>> GetByIdAsync(
             GetRecipeByIdSpecification specification,
+            CancellationToken cancellationToken);
+
+        Task<Result<IEnumerable<RecipeResponse>>> GetAllByProductIdAsync(
+            GetAllRecipesByProductIdQuery query,
+            GetAllRecipesByProductIdSpecification specification,
             CancellationToken cancellationToken);
     }
 }

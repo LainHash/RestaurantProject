@@ -9,11 +9,13 @@ using Restaurant.Application.Features.Catalog.Products.Queries.GetAll;
 using Restaurant.Application.Features.Catalog.Products.Queries.GetById;
 using Restaurant.Application.Features.Inventory.ProductStocks.Commands.UpdateQuantity;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
+using Restaurant.Application.Features.Production.Recipes.Queries.GetAllByProductId;
 using Restaurant.Application.Features.Storage.Images.Commands.Upload;
 using Restaurant.Application.Features.Storage.Images.Queries.GetAllByProductId;
 using Restaurant.Contract.DTOs.Catalog.Products;
 using Restaurant.Contract.DTOs.Inventory.ProductStocks;
 using Restaurant.Contract.DTOs.Storage.Images;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Restaurant.API.Controllers.Catalog
 {
@@ -131,6 +133,16 @@ namespace Restaurant.API.Controllers.Catalog
             var command = new UploadProductImageCommand(id, stream, file.FileName, metadata);
 
             var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpGet("{id}/recipe-list")]
+        public async Task<IActionResult> GetAllRecipes(
+            [FromRoute] string id,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetAllRecipesByProductIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
             return this.ToActionResult(result);
         }
     }

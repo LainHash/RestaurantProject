@@ -22,7 +22,7 @@ namespace Restaurant.API.Controllers.Production
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOneById(
+        public async Task<IActionResult> GetOne(
             [FromRoute] string id,
             CancellationToken cancellationToken)
         {
