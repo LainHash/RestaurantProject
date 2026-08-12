@@ -15,6 +15,8 @@ namespace Restaurant.Persistence.Mapping.Production
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
                 .ForMember(dest => dest.RecipeIngredients, opt => opt.MapFrom(src => src.RecipeIngredients));
+
+            CreateMap<CreateRecipeRequest, Recipe>();
         }
     }
 }

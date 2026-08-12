@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Restaurant.Application.Features.Production.Recipes.Commands.Create;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetAll;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetAllByProductId;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetById;
+using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Production;
 using Restaurant.Contract.DTOs.Production.Recipes;
 using Restaurant.Domain.Entities.Catalog;
@@ -12,6 +14,7 @@ using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Repositories.Catalog;
 using Restaurant.Domain.Repositories.Production;
 using System.Net;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.Persistence.Services.Production
 {
@@ -21,15 +24,18 @@ namespace Restaurant.Persistence.Services.Production
         private readonly IProductRepository _productRepository;
 
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RecipeService(
             IRecipeRepository recipeRepository,
             IMapper mapper,
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+            IUnitOfWork unitOfWork)
         {
             _recipeRepository = recipeRepository;
             _mapper = mapper;
             _productRepository = productRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<IEnumerable<RecipeResponse>>> GetAllAsync(
@@ -82,6 +88,38 @@ namespace Restaurant.Persistence.Services.Production
             var response = _mapper.Map<IEnumerable<RecipeResponse>>(recipes);
             return Result<IEnumerable<RecipeResponse>>
                 .Succeed(response, Success<Recipe>.Retrieved);
+        }
+
+        public async Task<Result<RecipeResponse>> CreateAsync(
+            CreateRecipeCommand command,
+            CreateRecipeSpecification specification,
+            CancellationToken cancellationToken)
+        {
+            var product = await _productRepository.FindByIdAsync(command.Body.ProductId, cancellationToken);
+            if (product is null)
+            {
+                return Result<RecipeResponse>
+                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (product.InventoryType == InventoryType.StockTracked)
+            {
+                return Result<RecipeResponse>
+                    .Fail("Cannot create recipes because this product is stock-tracked.", HttpStatusCode.NotFound);
+            }
+
+            var recipe = _mapper.Map<Recipe>(command.Body);
+            recipe.SetProduct(product.Id);
+            _recipeRepository.Add(recipe);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            specification.ApplyCriteria(recipe.Id);
+            var createdRecipe = await _recipeRepository.FindAsync(specification, cancellationToken);
+
+            var response = _mapper.Map<RecipeResponse>(createdRecipe);
+            return Result<RecipeResponse>
+                .Succeed(response, Success<Recipe>.Created, HttpStatusCode.Created);
         }
     }
 }

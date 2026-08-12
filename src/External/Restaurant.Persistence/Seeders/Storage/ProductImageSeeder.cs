@@ -27,10 +27,10 @@ namespace Restaurant.Persistence.Seeders.Storage
                 StringComparer.OrdinalIgnoreCase);
 
             var images = await context.Images
-                .Select(x => new {x.Id, x.Url})
+                .Select(x => new {x.Id, x.AltText})
                 .ToListAsync();
             var imageDictionary = images.ToDictionary(
-                x => x.Url,
+                x => x.AltText,
                 StringComparer.OrdinalIgnoreCase);
 
             var records =
@@ -41,8 +41,8 @@ namespace Restaurant.Persistence.Seeders.Storage
                 if (!productDictionary.TryGetValue(record.ProductName.ToLower(), out var product))
                     throw new Exception($"Product '{record.ProductName}' not found.");
 
-                if (!imageDictionary.TryGetValue(record.ImageUrl.ToLower(), out var image))
-                    throw new Exception($"Image '{record.ImageUrl}' not found.");
+                if (!imageDictionary.TryGetValue(record.AltText.ToLower(), out var image))
+                    throw new Exception($"Image '{record.AltText}' not found.");
 
                 var productImage = _mapper.Map<ProductImage>(record)
                     .SetProduct(product.Id)
