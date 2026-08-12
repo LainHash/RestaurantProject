@@ -1,4 +1,5 @@
 ﻿using Restaurant.Application.Features.Production.Recipes.Commands.Create;
+using Restaurant.Application.Features.Production.Recipes.Commands.Update;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetAll;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetAllByProductId;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetById;
@@ -25,6 +26,11 @@ namespace Restaurant.Application.Services.Production
         Task<Result<RecipeResponse>> CreateAsync(
             CreateRecipeCommand command,
             CreateRecipeSpecification specification,
+            CancellationToken cancellationToken);
+
+        Task<Result<RecipeResponse>> UpdateAsync(
+            UpdateRecipeCommand command,
+            UpdateRecipeSpecification specification,
             CancellationToken cancellationToken);
     }
 }
