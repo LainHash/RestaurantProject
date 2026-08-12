@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
+using Restaurant.Application.Features.Production.Recipes.Commands.AddIngredient;
 using Restaurant.Application.Features.Production.Recipes.Commands.Create;
 using Restaurant.Application.Features.Production.Recipes.Commands.Update;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetAll;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetById;
+using Restaurant.Contract.DTOs.Production.RecipeIngredients;
 using Restaurant.Contract.DTOs.Production.Recipes;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -52,6 +54,17 @@ namespace Restaurant.API.Controllers.Production
             CancellationToken cancellationToken)
         {
             var command = new UpdateRecipeCommand(id, body);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpPatch("{id}/ingredients")]
+        public async Task<IActionResult> AddIngredient(
+            [FromRoute] string id,
+            [FromBody] IEnumerable<AddRecipeIngredientRequest> body,
+            CancellationToken cancellationToken)
+        {
+            var command = new AddRecipeIngredientCommand(id, body);
             var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }

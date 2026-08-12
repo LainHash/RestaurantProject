@@ -1,4 +1,5 @@
-﻿using Restaurant.Application.Features.Production.Recipes.Commands.Create;
+﻿using Restaurant.Application.Features.Production.Recipes.Commands.AddIngredient;
+using Restaurant.Application.Features.Production.Recipes.Commands.Create;
 using Restaurant.Application.Features.Production.Recipes.Commands.Update;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetAll;
 using Restaurant.Application.Features.Production.Recipes.Queries.GetAllByProductId;
@@ -31,6 +32,11 @@ namespace Restaurant.Application.Services.Production
         Task<Result<RecipeResponse>> UpdateAsync(
             UpdateRecipeCommand command,
             UpdateRecipeSpecification specification,
+            CancellationToken cancellationToken);
+
+        Task<Result<RecipeResponse>> AddIngredientAsync(
+            AddRecipeIngredientCommand command,
+            AddRecipeIngredientSpecification specification,
             CancellationToken cancellationToken);
     }
 }
