@@ -1,17 +1,23 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Restaurant.Application.Services.Auth;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Catalog;
 using Restaurant.Application.Services.Inventory;
 using Restaurant.Application.Services.Production;
 using Restaurant.Application.Services.Storage;
 using Restaurant.Application.Services.Territory;
+using Restaurant.Domain.Entities.Identity;
 using Restaurant.Domain.Repositories;
+using Restaurant.Domain.Repositories.Identity;
 using Restaurant.Persistence.Context;
 using Restaurant.Persistence.Repositories;
 using Restaurant.Persistence.Repositories.Catalog;
+using Restaurant.Persistence.Repositories.Identity;
 using Restaurant.Persistence.Seeders;
+using Restaurant.Persistence.Services.Auth;
 using Restaurant.Persistence.Services.Business;
 using Restaurant.Persistence.Services.Catalog;
 using Restaurant.Persistence.Services.Inventory;
@@ -34,6 +40,20 @@ namespace Restaurant.Persistence
                     sqlOptions => sqlOptions.MigrationsAssembly(
                         typeof(RestaurantDbContext).Assembly.FullName)));
 
+            // ── Identity ─────────────────────────────────────────────────────
+            services.AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddRoles<ApplicationRole>()
+            .AddEntityFrameworkStores<RestaurantDbContext>()
+            .AddDefaultTokenProviders();
+
             // ── AutoMapper ───────────────────────────────────────────────────
             services.AddAutoMapper(cfg => cfg.AddMaps(typeof(DependencyInjection).Assembly));
 
@@ -52,6 +72,7 @@ namespace Restaurant.Persistence
 
             // ── Repositories ─────────────────────────────────────────────────
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IUserRepository, UserRepository>();
 
             var assembly = typeof(ProductCategoryRepository).Assembly;
 
@@ -73,6 +94,7 @@ namespace Restaurant.Persistence
             }
 
             // ── Services ─────────────────────────────────────────────────────
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IDataImporter, ExcelImporter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

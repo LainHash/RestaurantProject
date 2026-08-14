@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Entities.Identity;
 using Restaurant.Domain.Entities.Inventory;
 using Restaurant.Domain.Entities.Pricing;
 using Restaurant.Domain.Entities.Production;
@@ -11,7 +13,7 @@ using System.Reflection;
 namespace Restaurant.Persistence.Context
 {
     internal class RestaurantDbContext(DbContextOptions<RestaurantDbContext> options)
-        : DbContext(options)
+        : IdentityDbContext<ApplicationUser, ApplicationRole, int>(options)
     {
         public DbSet<ProductCategory> ProductCategories { get; set; } = null!;
         public DbSet<IngredientCategory> IngredientCategories { get; set; } = null!;

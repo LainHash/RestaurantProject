@@ -46,6 +46,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Data\" />
+	  <Folder Include="Services\Identity\" />
 	</ItemGroup>
 
 </Project>
