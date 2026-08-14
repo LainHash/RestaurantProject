@@ -84,7 +84,8 @@ namespace Restaurant.Persistence.Services.Auth
 
             await _emailService.SendEmailVerificationAsync(user.Email, token);
 
-            return Result<bool>.Succeed(true, "Registration successful. Please check your email to verify your account.");
+            return Result<bool>
+                .Succeed(true, "Registration successful. Please check your email to verify your account.");
         }
 
         public async Task<Result<AuthResponse>> RefreshTokenAsync(RefreshTokenRequest request, CancellationToken cancellationToken)
