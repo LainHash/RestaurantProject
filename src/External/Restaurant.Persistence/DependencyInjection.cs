@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Restaurant.Application.Services.Auth;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Catalog;
 using Restaurant.Application.Services.Inventory;
@@ -12,6 +13,7 @@ using Restaurant.Persistence.Context;
 using Restaurant.Persistence.Repositories;
 using Restaurant.Persistence.Repositories.Catalog;
 using Restaurant.Persistence.Seeders;
+using Restaurant.Persistence.Services.Auth;
 using Restaurant.Persistence.Services.Business;
 using Restaurant.Persistence.Services.Catalog;
 using Restaurant.Persistence.Services.Inventory;
@@ -75,6 +77,8 @@ namespace Restaurant.Persistence
             // ── Services ─────────────────────────────────────────────────────
             services.AddScoped<IDataImporter, ExcelImporter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             services.AddScoped<IProductCategoryService, ProductCategoryService>();
             services.AddScoped<IIngredientCategoryService, IngredientCategoryService>();
