@@ -1,4 +1,5 @@
 ﻿using Restaurant.Domain.Abstraction;
+using Restaurant.Domain.Entities.Guest;
 
 namespace Restaurant.Domain.Entities.Identity
 {
@@ -13,5 +14,7 @@ namespace Restaurant.Domain.Entities.Identity
 
         public Role Role { get; private set; } = null!;
         public ICollection<OtpVerification> OtpVerifications { get; private set; } = [];
+        public Customer? Customer { get; private set; } = null!;
+        public PersonalProfile? PersonalProfile { get; private set; } = null!;
     }
 }
