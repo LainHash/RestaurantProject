@@ -2,8 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Restaurant.Application.Services.Auth;
+using Restaurant.Application.Services.Email;
 using Restaurant.Application.Services.Storage;
+using Restaurant.Contract.Settings.Auth;
+using Restaurant.Contract.Settings.Email;
 using Restaurant.Contract.Settings.Storage;
+using Restaurant.Infrastructure.Services.Auth;
+using Restaurant.Infrastructure.Services.Email;
 using Restaurant.Infrastructure.Services.Storage;
 
 namespace Restaurant.Infrastructure
@@ -20,36 +26,36 @@ namespace Restaurant.Infrastructure
             services.AddScoped<ICloudinaryService, CloudinaryService>();
 
             // ── Authentication & Security ────────────────────────────────────
-            //services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
-            //services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+            services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
-            //services.AddScoped<IJwtProvider, JwtProvider>();
-            //services.AddScoped<IPasswordHasher, PasswordHasher>();
-            //services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IJwtProvider, JwtProvider>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IEmailService, EmailService>();
 
-            //var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
-            //if (jwtSettings is not null)
-            //{
-            //    services.AddAuthentication(options =>
-            //    {
-            //        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    })
-            //    .AddJwtBearer(options =>
-            //    {
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateIssuer = true,
-            //            ValidateAudience = true,
-            //            ValidateLifetime = true,
-            //            ValidateIssuerSigningKey = true,
-            //            ValidIssuer = jwtSettings.Issuer,
-            //            ValidAudience = jwtSettings.Audience,
-            //            IssuerSigningKey = new SymmetricSecurityKey(
-            //                System.Text.Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
-            //        };
-            //    });
-            //}
+            var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
+            if (jwtSettings is not null)
+            {
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtSettings.Issuer,
+                        ValidAudience = jwtSettings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            System.Text.Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+                    };
+                });
+            }
 
             return services;
         }
