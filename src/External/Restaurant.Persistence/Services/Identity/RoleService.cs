@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Identity.Roles.Commands.Create;
+using Restaurant.Application.Features.Identity.Roles.Commands.Delete;
+using Restaurant.Application.Features.Identity.Roles.Commands.Restore;
 using Restaurant.Application.Features.Identity.Roles.Commands.Update;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetAll;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetById;
@@ -93,6 +95,48 @@ namespace Restaurant.Persistence.Services.Identity
             var response = _mapper.Map<RoleResponse>(role);
             return Result<RoleResponse>
                 .Succeed(response, Success<Role>.Updated);
+        }
+
+        public async Task<Result> DeleteAsync(
+            DeleteRoleSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var role = await _roleRepository.FindAsync(specification, cancellationToken);
+            if (role is null)
+            {
+                return Result
+                    .Fail(Error<Role>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (role.IsDeleted)
+            {
+                return Result
+                    .Fail(Error<Role>.AlreadyDeleted);
+            }
+
+            return Result
+                .Succeed(Success<Role>.Deleted);
+        }
+
+        public async Task<Result> RestoreAsync(
+            RestoreRoleSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var role = await _roleRepository.FindAsync(specification, cancellationToken);
+            if (role is null)
+            {
+                return Result
+                    .Fail(Error<Role>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (!role.IsDeleted)
+            {
+                return Result
+                    .Fail(Error<Role>.NotYetDeleted);
+            }
+
+            return Result
+                .Succeed(Success<Role>.Restored);
         }
     }
 }
