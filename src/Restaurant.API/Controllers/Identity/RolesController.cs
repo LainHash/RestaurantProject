@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetAll;
+using Restaurant.Application.Features.Identity.Roles.Queries.GetById;
 
 namespace Restaurant.API.Controllers.Identity
 {
@@ -16,6 +17,16 @@ namespace Restaurant.API.Controllers.Identity
             [FromQuery] GetAllRolesQuery query,
             CancellationToken cancellationToken)
         {
+            var result = await _mediator.Send(query, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOne(
+            [FromRoute] string id,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetRoleByIdQuery(id);
             var result = await _mediator.Send(query, cancellationToken);
             return this.ToActionResult(result);
         }
