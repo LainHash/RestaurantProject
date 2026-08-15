@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Identity.Roles.Commands.Create;
+using Restaurant.Application.Features.Identity.Roles.Commands.Update;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetAll;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetById;
 using Restaurant.Application.Services.Business;
@@ -70,7 +71,28 @@ namespace Restaurant.Persistence.Services.Identity
 
             var response = _mapper.Map<RoleResponse>(createdRole);
             return Result<RoleResponse>
-                .Succeed(response, Success<Role>.Retrieved);
+                .Succeed(response, Success<Role>.Created, HttpStatusCode.Created);
+        }
+
+        public async Task<Result<RoleResponse>> UpdateAsync(
+            UpdateRoleCommand command,
+            UpdateRoleSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var role = await _roleRepository.FindAsync(specification, cancellationToken);
+            if (role is null)
+            {
+                return Result<RoleResponse>
+                    .Fail(Error<Role>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            _mapper.Map(command.Body, role);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var response = _mapper.Map<RoleResponse>(role);
+            return Result<RoleResponse>
+                .Succeed(response, Success<Role>.Updated);
         }
     }
 }

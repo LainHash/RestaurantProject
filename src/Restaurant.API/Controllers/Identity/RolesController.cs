@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Identity.Roles.Commands.Create;
+using Restaurant.Application.Features.Identity.Roles.Commands.Update;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetAll;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetById;
 using Restaurant.Contract.DTOs.Identity.Roles;
@@ -40,6 +41,17 @@ namespace Restaurant.API.Controllers.Identity
             CancellationToken cancellationToken)
         {
             var command = new CreateRoleCommand(body);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(
+            [FromRoute] string id,
+            [FromBody] UpdateRoleRequest body,
+            CancellationToken cancellationToken)
+        {
+            var command = new UpdateRoleCommand(id, body);
             var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }

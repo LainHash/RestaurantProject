@@ -21,7 +21,6 @@
 	<ItemGroup>
 	  <Folder Include="Features\Identity\Roles\Commands\Delete\" />
 	  <Folder Include="Features\Identity\Roles\Commands\Restore\" />
-	  <Folder Include="Features\Identity\Roles\Commands\Update\" />
 	</ItemGroup>
 
 </Project>
