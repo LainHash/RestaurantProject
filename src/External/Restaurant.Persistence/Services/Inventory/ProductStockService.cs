@@ -4,7 +4,6 @@ using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByBr
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByProductId;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Inventory;
-using Restaurant.Contract.DTOs.Catalog.Products;
 using Restaurant.Contract.DTOs.Inventory.ProductStocks;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Inventory;
@@ -17,7 +16,6 @@ using Restaurant.Domain.Repositories.Inventory;
 using Restaurant.Domain.Repositories.Territory;
 using Restaurant.Domain.Specifications;
 using System.Net;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.Persistence.Services.Inventory
 {

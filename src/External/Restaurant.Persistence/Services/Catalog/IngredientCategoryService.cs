@@ -107,20 +107,20 @@ namespace Restaurant.Persistence.Services.Catalog
                 .Succeed(response, Success<IngredientCategory>.Updated, HttpStatusCode.OK);
         }
 
-        public async Task<Result<object>> DeleteAsync(
+        public async Task<Result> DeleteAsync(
             ISpecification<IngredientCategory> specification,
             CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.FindAsync(specification, cancellationToken);
             if (category == null)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<IngredientCategory>.NotFound, HttpStatusCode.NotFound);
             }
 
             if (category.IsDeleted)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<IngredientCategory>.AlreadyDeleted, HttpStatusCode.BadRequest);
             }
 
@@ -128,24 +128,24 @@ namespace Restaurant.Persistence.Services.Catalog
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result<object>
-                .Succeed(default, Success<IngredientCategory>.Deleted);
+            return Result
+                .Succeed(Success<IngredientCategory>.Deleted);
         }
 
-        public async Task<Result<object>> RestoreAsync(
+        public async Task<Result> RestoreAsync(
             ISpecification<IngredientCategory> specification,
             CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.FindAsync(specification, cancellationToken);
             if (category == null)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<IngredientCategory>.NotFound, HttpStatusCode.NotFound);
             }
 
             if (!category.IsDeleted)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<IngredientCategory>.NotYetDeleted, HttpStatusCode.BadRequest);
             }
 
@@ -153,8 +153,8 @@ namespace Restaurant.Persistence.Services.Catalog
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result<object>
-                .Succeed(default, Success<IngredientCategory>.Restored);
+            return Result
+                .Succeed(Success<IngredientCategory>.Restored);
         }
     }
 }

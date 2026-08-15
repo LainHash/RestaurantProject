@@ -172,20 +172,20 @@ namespace Restaurant.Persistence.Services.Catalog
                 .Succeed(response, Success<Product>.Updated);
         }
 
-        public async Task<Result<object>> DeleteAsync(
+        public async Task<Result> DeleteAsync(
             ISpecification<Product> specification,
             CancellationToken cancellationToken)
         {
             var product = await _productRepository.FindAsync(specification, cancellationToken);
             if (product is null)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
             }
 
             if (product.IsDeleted)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<Product>.AlreadyDeleted, HttpStatusCode.BadRequest);
             }
 
@@ -193,24 +193,24 @@ namespace Restaurant.Persistence.Services.Catalog
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result<object>
-                .Succeed(default, Success<Product>.Deleted);
+            return Result
+                .Succeed(Success<Product>.Deleted);
         }
 
-        public async Task<Result<object>> RestoreAsync(
+        public async Task<Result> RestoreAsync(
             ISpecification<Product> specification,
             CancellationToken cancellationToken)
         {
             var product = await _productRepository.FindAsync(specification, cancellationToken);
             if (product is null)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
             }
 
             if (!product.IsDeleted)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<Product>.NotYetDeleted, HttpStatusCode.BadRequest);
             }
 
@@ -218,8 +218,8 @@ namespace Restaurant.Persistence.Services.Catalog
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result<object>
-                .Succeed(default, Success<Product>.Restored);
+            return Result
+                .Succeed(Success<Product>.Restored);
         }
     }
 }
