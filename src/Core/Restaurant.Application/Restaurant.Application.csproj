@@ -18,4 +18,10 @@
 		<ProjectReference Include="..\Restaurant.Domain\Restaurant.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Features\Identity\Roles\Commands\Delete\" />
+	  <Folder Include="Features\Identity\Roles\Commands\Restore\" />
+	  <Folder Include="Features\Identity\Roles\Commands\Update\" />
+	</ItemGroup>
+
 </Project>

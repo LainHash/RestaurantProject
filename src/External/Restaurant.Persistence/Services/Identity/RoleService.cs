@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Restaurant.Application.Features.Identity.Roles.Commands.Create;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetAll;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetById;
 using Restaurant.Application.Services.Business;
@@ -52,6 +53,22 @@ namespace Restaurant.Persistence.Services.Identity
             }
 
             var response = _mapper.Map<RoleResponse>(role);
+            return Result<RoleResponse>
+                .Succeed(response, Success<Role>.Retrieved);
+        }
+
+        public async Task<Result<RoleResponse>> CreateAsync(
+            CreateRoleCommand command,
+            CancellationToken cancellationToken = default)
+        {
+            var role = _mapper.Map<Role>(command.Body);
+            _roleRepository.Add(role);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var createdRole = await _roleRepository.FindByIdAsync(role.Id, cancellationToken);
+
+            var response = _mapper.Map<RoleResponse>(createdRole);
             return Result<RoleResponse>
                 .Succeed(response, Success<Role>.Retrieved);
         }

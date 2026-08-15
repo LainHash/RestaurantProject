@@ -1,8 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
+using Restaurant.Application.Features.Identity.Roles.Commands.Create;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetAll;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetById;
+using Restaurant.Contract.DTOs.Identity.Roles;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.API.Controllers.Identity
 {
@@ -28,6 +31,16 @@ namespace Restaurant.API.Controllers.Identity
         {
             var query = new GetRoleByIdQuery(id);
             var result = await _mediator.Send(query, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(
+            [FromBody] CreateRoleRequest body,
+            CancellationToken cancellationToken)
+        {
+            var command = new CreateRoleCommand(body);
+            var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }
     }
