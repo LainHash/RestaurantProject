@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Application.Services.Auth;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Catalog;
+using Restaurant.Application.Services.Identity;
 using Restaurant.Application.Services.Inventory;
 using Restaurant.Application.Services.Production;
 using Restaurant.Application.Services.Storage;
@@ -16,6 +17,7 @@ using Restaurant.Persistence.Seeders;
 using Restaurant.Persistence.Services.Auth;
 using Restaurant.Persistence.Services.Business;
 using Restaurant.Persistence.Services.Catalog;
+using Restaurant.Persistence.Services.Identity;
 using Restaurant.Persistence.Services.Inventory;
 using Restaurant.Persistence.Services.Production;
 using Restaurant.Persistence.Services.Storage;
@@ -95,6 +97,8 @@ namespace Restaurant.Persistence
             services.AddScoped<IImageService, ImageService>();
 
             services.AddScoped<IRecipeService, RecipeService>();
+
+            services.AddScoped<IRoleService, RoleService>();
 
             return services;
         }

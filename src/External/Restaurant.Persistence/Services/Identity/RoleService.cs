@@ -1,6 +1,11 @@
 ﻿using AutoMapper;
+using Restaurant.Application.Features.Identity.Roles.Queries.GetAll;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Identity;
+using Restaurant.Contract.DTOs.Identity.Roles;
+using Restaurant.Domain.Entities.Identity;
+using Restaurant.Domain.Models.Messages;
+using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Repositories.Identity;
 
 namespace Restaurant.Persistence.Services.Identity
@@ -20,6 +25,17 @@ namespace Restaurant.Persistence.Services.Identity
             _roleRepository = roleRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        public async Task<Result<IEnumerable<RoleResponse>>> GetAllAsync(
+            GetAllRolesSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var roles = await _roleRepository.ToListAsync(specification, cancellationToken);
+
+            var response = _mapper.Map<IEnumerable<RoleResponse>>(roles);
+            return Result<IEnumerable<RoleResponse>>
+                .Succeed(response, Success<Role>.Retrieved);
         }
     }
 }
