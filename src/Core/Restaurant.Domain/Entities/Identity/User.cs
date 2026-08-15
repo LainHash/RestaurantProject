@@ -12,5 +12,6 @@ namespace Restaurant.Domain.Entities.Identity
         public int RoleId { get; private set; }
 
         public Role Role { get; private set; } = null!;
+        public ICollection<OtpVerification> OtpVerifications { get; private set; } = [];
     }
 }
