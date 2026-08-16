@@ -2,6 +2,7 @@
 using ConvenienceStore.Contract.DTOs.Authentication;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Restaurant.Application.Features.Auth.Commands.Login;
 using Restaurant.Application.Features.Auth.Commands.Register;
 using Restaurant.Application.Services.Auth;
 using Restaurant.Application.Services.Business;
@@ -60,11 +61,11 @@ namespace Restaurant.Persistence.Services.Auth
         }
 
         public async Task<Result<AuthenticationResponse>> LoginAsync(
-            LoginRequest request,
+            LoginCommand command,
             CancellationToken cancellationToken = default)
         {
-            var user = await _userRepository.FindByEmailAsync(request.Email, cancellationToken);
-            if (user is null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
+            var user = await _userRepository.FindByEmailAsync(command.Body.Email, cancellationToken);
+            if (user is null || !_passwordHasher.VerifyPassword(command.Body.Password, user.PasswordHash))
             {
                 return Result<AuthenticationResponse>
                     .Fail("Incorrect email or password.", HttpStatusCode.Unauthorized);
