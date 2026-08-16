@@ -3,6 +3,7 @@ using ConvenienceStore.Contract.DTOs.Authentication;
 using Microsoft.Extensions.Logging;
 using Restaurant.Application.Features.Auth.Commands.Login;
 using Restaurant.Application.Features.Auth.Commands.Register;
+using Restaurant.Application.Features.Auth.Commands.ResendVerification;
 using Restaurant.Application.Features.Auth.Commands.VerifyEmail;
 using Restaurant.Application.Services.Auth;
 using Restaurant.Application.Services.Business;
@@ -214,6 +215,47 @@ namespace Restaurant.Persistence.Services.Auth
 
             return Result
                 .Succeed("Email verified successfully. You can now login.", HttpStatusCode.Accepted);
+        }
+
+        public async Task<Result> ResendVerificationAsync(
+            ResendVerificationCommand command,
+            CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.FindByEmailAsync(command.Body.Email, cancellationToken);
+            if (user is null)
+            {
+                return Result
+                    .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (user.IsActive)
+            {
+                return Result
+                    .Fail("Account is already active.", HttpStatusCode.Conflict);
+            }
+
+            var verificationCode = GenerateCode();
+            var otpVerification = new OtpVerification(
+                user.Id,
+                _otpHasher.HashOtp(verificationCode),
+                OtpPurpose.EmailVerification);
+            _otpVerificationRepository.Add(otpVerification);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            try
+            {
+                var message = new EmailMessage(user.UserName, verificationCode);
+                await _emailService.SendEmailAsync(user.Email, message, cancellationToken);
+
+                return Result
+                    .Succeed("Verification email resent. Please check your inbox.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Send verification email failed.");
+                throw;
+            }
         }
 
         private string GenerateCode()

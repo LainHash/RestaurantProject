@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Auth.Commands.Login;
 using Restaurant.Application.Features.Auth.Commands.Register;
+using Restaurant.Application.Features.Auth.Commands.ResendVerification;
 using Restaurant.Application.Features.Auth.Commands.VerifyEmail;
 using Restaurant.Contract.DTOs.Auth;
 
@@ -40,6 +41,16 @@ namespace Restaurant.API.Controllers.Auth
             CancellationToken cancellationToken)
         {
             var command = new VerifyEmailCommand(body);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpPost("resend-verification")]
+        public async Task<IActionResult> ResendVerification(
+            [FromBody] ResendVerificationRequest body,
+            CancellationToken cancellationToken)
+        {
+            var command = new ResendVerificationCommand(body);
             var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }
