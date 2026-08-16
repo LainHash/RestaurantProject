@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using ConvenienceStore.Contract.DTOs.Authentication;
+using MediatR;
 using Microsoft.Extensions.Logging;
+using Restaurant.Application.Features.Auth.Commands.CompleteProfile;
 using Restaurant.Application.Features.Auth.Commands.Login;
 using Restaurant.Application.Features.Auth.Commands.Register;
 using Restaurant.Application.Features.Auth.Commands.ResendVerification;
@@ -27,6 +29,7 @@ namespace Restaurant.Persistence.Services.Auth
         private readonly IRoleRepository _roleRepository;
         private readonly IOtpVerificationRepository _otpVerificationRepository;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IPersonalProfileRepository _personalProfileRepository;
 
         private readonly IPasswordHasher _passwordHasher;
         private readonly IOtpHasher _otpHasher;
@@ -47,7 +50,8 @@ namespace Restaurant.Persistence.Services.Auth
             ILogger<AuthenticationService> logger,
             IOtpHasher otpHasher,
             IOtpVerificationRepository otpVerificationRepository,
-            ICustomerRepository customerRepository)
+            ICustomerRepository customerRepository,
+            IPersonalProfileRepository personalProfileRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -60,6 +64,7 @@ namespace Restaurant.Persistence.Services.Auth
             _otpHasher = otpHasher;
             _otpVerificationRepository = otpVerificationRepository;
             _customerRepository = customerRepository;
+            _personalProfileRepository = personalProfileRepository;
         }
 
         public async Task<Result<AuthenticationResponse>> LoginAsync(
@@ -256,6 +261,39 @@ namespace Restaurant.Persistence.Services.Auth
                 _logger.LogError(ex, "Send verification email failed.");
                 throw;
             }
+        }
+
+        public async Task<Result> CompleteProfileAsync(
+            CompleteProfileCommand command,
+            CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.FindByEmailAsync(command.Body.Email, cancellationToken);
+            if (user is null)
+            {
+                return Result
+                    .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (!user.IsActive)
+            {
+                return Result
+                    .Fail("Account is not active. Please verify your email first.", HttpStatusCode.PreconditionRequired);
+            }
+
+            var personalProfile = await _personalProfileRepository.FindByUserAsync(user.Id, cancellationToken);
+            if(personalProfile is not null)
+            {
+                return Result
+                    .Fail("Profile has already been completed.", HttpStatusCode.Conflict);
+            }
+
+            personalProfile = _mapper.Map<PersonalProfile>(command.Body);
+            _personalProfileRepository.Add(personalProfile);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result
+                .Succeed("Profile completed successfully.", HttpStatusCode.Accepted);
         }
 
         private string GenerateCode()

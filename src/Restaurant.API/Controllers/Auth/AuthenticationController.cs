@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
+using Restaurant.Application.Features.Auth.Commands.CompleteProfile;
 using Restaurant.Application.Features.Auth.Commands.Login;
 using Restaurant.Application.Features.Auth.Commands.Register;
 using Restaurant.Application.Features.Auth.Commands.ResendVerification;
@@ -51,6 +52,16 @@ namespace Restaurant.API.Controllers.Auth
             CancellationToken cancellationToken)
         {
             var command = new ResendVerificationCommand(body);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpPost("complete-profile")]
+        public async Task<IActionResult> CompleteProfile(
+            [FromBody] CompleteProfileRequest body,
+            CancellationToken cancellationToken)
+        {
+            var command = new CompleteProfileCommand(body);
             var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }
