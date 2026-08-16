@@ -20,7 +20,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Features\Auth\Commands\RefreshToken\" />
-	  <Folder Include="Features\Auth\Commands\VerifyEmail\" />
 	</ItemGroup>
 
 </Project>

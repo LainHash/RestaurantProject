@@ -30,5 +30,15 @@ namespace Restaurant.Domain.Entities.Identity
             Purpose = otpPurpose;
             ExpiresAt = DateTime.UtcNow.AddMinutes(15);
         }
+
+        public void IncrementFailedAttempt()
+        {
+            FailedAttempts++;
+        }
+
+        public void MarkAsUsed()
+        {
+            UsedAt = DateTime.UtcNow;
+        }
     }
 }

@@ -33,5 +33,10 @@ namespace Restaurant.Domain.Entities.Identity
             RoleId = roleId;
             return this;
         }
+
+        public void CompleteVerification()
+        {
+            IsActive = true;
+        }
     }
 }

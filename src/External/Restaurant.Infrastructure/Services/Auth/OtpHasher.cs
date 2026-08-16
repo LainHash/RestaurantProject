@@ -25,9 +25,19 @@ namespace Restaurant.Infrastructure.Services.Auth
             return Convert.ToHexString(hash);
         }
 
-        public bool VerifyOtp(string otp, string otpHash)
+        public bool VerifyOtp(string otp, string storedHash)
         {
-            throw new NotImplementedException();
+            using var hmac = new HMACSHA256(
+                Encoding.UTF8.GetBytes(_secret));
+
+            var actualHash = hmac.ComputeHash(
+                Encoding.UTF8.GetBytes(otp));
+
+            var expectedHash = Convert.FromHexString(storedHash);
+
+            return CryptographicOperations.FixedTimeEquals(
+                actualHash,
+                expectedHash);
         }
     }
 }

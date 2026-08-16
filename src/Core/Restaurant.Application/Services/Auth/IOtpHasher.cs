@@ -3,6 +3,6 @@
     public interface IOtpHasher
     {
         string HashOtp(string otp);
-        bool VerifyOtp(string otp, string otpHash);
+        bool VerifyOtp(string inputOtp, string storedOtp);
     }
 }

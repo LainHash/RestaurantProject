@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using ConvenienceStore.Contract.DTOs.Authentication;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Restaurant.Application.Features.Auth.Commands.Login;
 using Restaurant.Application.Features.Auth.Commands.Register;
+using Restaurant.Application.Features.Auth.Commands.VerifyEmail;
 using Restaurant.Application.Services.Auth;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Email;
-using Restaurant.Contract.DTOs.Auth;
 using Restaurant.Domain.Entities.Guest;
 using Restaurant.Domain.Entities.Identity;
 using Restaurant.Domain.Enums;
@@ -21,6 +20,8 @@ namespace Restaurant.Persistence.Services.Auth
 {
     internal class AuthenticationService : IAuthenticationService
     {
+        private const int MaxFailedAttempts = 5;
+
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IOtpVerificationRepository _otpVerificationRepository;
@@ -153,6 +154,66 @@ namespace Restaurant.Persistence.Services.Auth
                 return Result<object>
                     .Fail("Register request failed.", HttpStatusCode.InternalServerError);
             }
+        }
+
+        public async Task<Result> VerifyEmailAsync(
+            VerifyEmailCommand command,
+            CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.FindByEmailAsync(command.Body.Email, cancellationToken);
+            if (user is null)
+            {
+                return Result
+                    .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (user.IsActive)
+            {
+                return Result
+                    .Fail("Account is already active.", HttpStatusCode.Conflict);
+            }
+
+            var verification = await _otpVerificationRepository.FindAsync(user.Id, OtpPurpose.EmailVerification, cancellationToken);
+
+            if (verification is null)
+            {
+                return Result
+                    .Fail("OTP verification not found", HttpStatusCode.NotFound);
+            }
+
+            if (verification.UsedAt is not null)
+            {
+                return Result
+                    .Fail("OTP has already been used", HttpStatusCode.Conflict);
+            }
+
+            if (verification.ExpiresAt <= DateTime.UtcNow)
+            {
+                return Result
+                    .Fail("OTP has expired", HttpStatusCode.RequestTimeout);
+            }
+
+            if (verification.FailedAttempts >= MaxFailedAttempts)
+            {
+                return Result
+                    .Fail("Too many failed attempts");
+            }
+
+            if (!_otpHasher.VerifyOtp(command.Body.Code, verification.CodeHash))
+            {
+                verification.IncrementFailedAttempt();
+                return Result
+                    .Fail("Invalid OTP");
+            }
+
+            verification.MarkAsUsed();
+
+            user.CompleteVerification();
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result
+                .Succeed("Email verified successfully. You can now login.", HttpStatusCode.Accepted);
         }
 
         private string GenerateCode()
