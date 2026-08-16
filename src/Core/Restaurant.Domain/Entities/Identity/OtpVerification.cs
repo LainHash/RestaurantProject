@@ -3,7 +3,7 @@ using Restaurant.Domain.Enums;
 
 namespace Restaurant.Domain.Entities.Identity
 {
-    public class OtpVerification : AuditableEntity
+    public partial class OtpVerification : AuditableEntity
     {
         public int UserId { get; private set; }
 
@@ -17,5 +17,18 @@ namespace Restaurant.Domain.Entities.Identity
         public int FailedAttempts { get; private set; }
 
         public User User { get; private set; } = null!;
+    }
+
+    public partial class OtpVerification
+    {
+        public OtpVerification() { }
+
+        public OtpVerification(int userId, string codeHash, OtpPurpose otpPurpose)
+        {
+            UserId = userId;
+            CodeHash = codeHash;
+            Purpose = otpPurpose;
+            ExpiresAt = DateTime.UtcNow.AddMinutes(15);
+        }
     }
 }

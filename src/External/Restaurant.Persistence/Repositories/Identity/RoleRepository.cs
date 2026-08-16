@@ -19,5 +19,10 @@ namespace Restaurant.Persistence.Repositories.Identity
         {
             return await _context.Roles.FirstOrDefaultAsync(x => x.PublicId == id, cancellationToken);
         }
+
+        public async Task<Role?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
+        {
+            return await _context.Roles.FirstOrDefaultAsync(x => x.Name == name, cancellationToken);
+        }
     }
 }

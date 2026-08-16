@@ -1,11 +1,18 @@
 ﻿using AutoMapper;
 using ConvenienceStore.Contract.DTOs.Authentication;
+using MediatR;
 using Microsoft.Extensions.Logging;
+using Restaurant.Application.Features.Auth.Commands.Register;
 using Restaurant.Application.Services.Auth;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Email;
 using Restaurant.Contract.DTOs.Auth;
+using Restaurant.Domain.Entities.Guest;
+using Restaurant.Domain.Entities.Identity;
+using Restaurant.Domain.Enums;
+using Restaurant.Domain.Models.Messages;
 using Restaurant.Domain.Models.Results;
+using Restaurant.Domain.Repositories.Guest;
 using Restaurant.Domain.Repositories.Identity;
 using System.Net;
 
@@ -15,8 +22,11 @@ namespace Restaurant.Persistence.Services.Auth
     {
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly IOtpVerificationRepository _otpVerificationRepository;
+        private readonly ICustomerRepository _customerRepository;
 
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IOtpHasher _otpHasher;
         private readonly IEmailService _emailService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IJwtProvider _jwtProvider;
@@ -31,7 +41,10 @@ namespace Restaurant.Persistence.Services.Auth
             IUnitOfWork unitOfWork,
             IJwtProvider jwtProvider,
             IMapper mapper,
-            ILogger<AuthenticationService> logger)
+            ILogger<AuthenticationService> logger,
+            IOtpHasher otpHasher,
+            IOtpVerificationRepository otpVerificationRepository,
+            ICustomerRepository customerRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -41,6 +54,9 @@ namespace Restaurant.Persistence.Services.Auth
             _jwtProvider = jwtProvider;
             _mapper = mapper;
             _logger = logger;
+            _otpHasher = otpHasher;
+            _otpVerificationRepository = otpVerificationRepository;
+            _customerRepository = customerRepository;
         }
 
         public async Task<Result<AuthenticationResponse>> LoginAsync(
@@ -69,6 +85,79 @@ namespace Restaurant.Persistence.Services.Auth
 
             return Result<AuthenticationResponse>
                 .Succeed(response, "Login successfully.", HttpStatusCode.Accepted);
+        }
+
+        public async Task<Result> RegisterAsync(
+            RegisterCommand command,
+            CancellationToken cancellationToken = default)
+        {
+            await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                var existingUser = await _userRepository.FindByEmailAsync(command.Body.Email, cancellationToken);
+                if (existingUser is not null)
+                {
+                    return Result<object>
+                        .Fail("This email already used. Please use another email.", HttpStatusCode.Conflict);
+                }
+
+                var customerRole = await _roleRepository.FindByNameAsync("Customer", cancellationToken);
+                if (customerRole is null)
+                {
+                    return Result<object>
+                        .Fail(Error<Role>.NotFound, HttpStatusCode.InternalServerError);
+                }
+
+                var user = _mapper.Map<User>(command.Body)
+                    .SetPasswordHash(_passwordHasher.HashPassword(command.Body.Password))
+                    .SetRole(customerRole.Id);
+                _userRepository.Add(user);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                var verificationCode = GenerateCode();
+                var otpVerification = new OtpVerification(
+                    user.Id,
+                    _otpHasher.HashOtp(verificationCode),
+                    OtpPurpose.EmailVerification);
+                _otpVerificationRepository.Add(otpVerification);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                var customer = new Customer(user.Id);
+                _customerRepository.Add(customer);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                await transaction.CommitAsync(cancellationToken);
+
+                try
+                {
+                    var message = new EmailMessage(user.UserName, verificationCode);
+                    await _emailService.SendEmailAsync(user.Email, message, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Send verification email failed.");
+                }
+
+                return Result
+                    .Succeed("Register successfully. Please check your account to get verification code.", HttpStatusCode.Created);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+
+                _logger.LogError(ex, "Register request failed. Email: {Email}", command.Body.Email);
+                return Result<object>
+                    .Fail("Register request failed.", HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private string GenerateCode()
+        {
+            var random = new Random();
+            return random.Next(100000, 999999).ToString();
         }
     }
 }

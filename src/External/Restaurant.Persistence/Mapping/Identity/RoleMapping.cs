@@ -3,7 +3,7 @@ using Restaurant.Contract.DTOs.Identity.Roles;
 using Restaurant.Domain.Entities.Identity;
 using Restaurant.Persistence.DataRecords.Identity;
 
-namespace Restaurant.Persistence.Mapping.Indentity
+namespace Restaurant.Persistence.Mapping.Identity
 {
     internal class RoleMapping : Profile
     {

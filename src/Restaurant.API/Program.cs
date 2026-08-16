@@ -14,8 +14,9 @@ while (searchDir is not null)
     if (File.Exists(envPath)) { Env.Load(envPath); break; }
     searchDir = Directory.GetParent(searchDir)?.FullName;
 }
-
 var builder = WebApplication.CreateBuilder(args);
+
+var otpSecret = builder.Configuration["OTP_SECRET_KEY"];
 
 // Add services to the container.
 

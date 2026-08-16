@@ -48,6 +48,10 @@ namespace Restaurant.Persistence.Context
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.HasSequence<long>("CustomerCodeSequence")
+                .StartsAt(1)
+                .IncrementsBy(1);
+
             // Auto-register all IEntityTypeConfiguration<T> classes in this assembly
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }

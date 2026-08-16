@@ -18,4 +18,10 @@
 		<ProjectReference Include="..\Restaurant.Domain\Restaurant.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Features\Auth\Commands\Login\" />
+	  <Folder Include="Features\Auth\Commands\RefreshToken\" />
+	  <Folder Include="Features\Auth\Commands\VerifyEmail\" />
+	</ItemGroup>
+
 </Project>

@@ -6,5 +6,7 @@ namespace Restaurant.Domain.Repositories.Identity
     {
         Task<Role?> FindByIdAsync(int id, CancellationToken cancellationToken = default);
         Task<Role?> FindByIdAsync(string id, CancellationToken cancellationToken = default);
+
+        Task<Role?> FindByNameAsync(string name, CancellationToken cancellationToken = default);
     }
 }

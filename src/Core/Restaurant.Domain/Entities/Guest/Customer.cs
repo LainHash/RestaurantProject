@@ -3,12 +3,25 @@ using Restaurant.Domain.Entities.Identity;
 
 namespace Restaurant.Domain.Entities.Guest
 {
-    public class Customer : SoftDeletableEntity
+    public partial class Customer : SoftDeletableEntity
     {
-        public string CustomerCode { get; private set; } = string.Empty;
+        public long CustomerNumber { get; private set; }
+
+        public string CustomerCode =>
+            $"CUS-{CustomerNumber:D6}";
 
         public int UserId { get; private set; }
 
         public User User { get; private set; } = null!;
+    }
+
+    public partial class Customer
+    {
+        public Customer() { }
+
+        public Customer(int userId)
+        {
+            UserId = userId;
+        }
     }
 }

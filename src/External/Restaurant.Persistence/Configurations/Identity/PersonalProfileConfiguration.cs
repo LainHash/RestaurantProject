@@ -53,6 +53,9 @@ namespace Restaurant.Persistence.Configurations.Identity
                 .IsRequired()
                 .HasMaxLength(20);
 
+            builder.HasIndex(x => x.UserId)
+                .IsUnique();
+
             builder.HasOne(x => x.User)
                 .WithOne(x => x.PersonalProfile)
                 .HasForeignKey<PersonalProfile>(x => x.UserId)

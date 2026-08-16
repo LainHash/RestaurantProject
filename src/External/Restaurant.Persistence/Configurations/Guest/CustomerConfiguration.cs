@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Restaurant.Domain.Entities.Guest;
+using System.Reflection.Emit;
 
 namespace Restaurant.Persistence.Configurations.Guest
 {
@@ -19,8 +20,14 @@ namespace Restaurant.Persistence.Configurations.Guest
             builder.Property(x => x.PublicId)
                 .IsRequired();
 
-            builder.Property(x => x.CustomerCode)
-                .IsRequired();
+            builder.Ignore(x => x.CustomerCode);
+
+            builder.Property(x => x.CustomerNumber)
+                .HasDefaultValueSql(
+                    "nextval('\"CustomerCodeSequence\"')");
+
+            builder.HasIndex(x => x.UserId)
+                .IsUnique();
 
             builder.HasOne(x => x.User)
                 .WithOne(x => x.Customer)
