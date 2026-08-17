@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Inventory.ProductStocks.Queries.GetAllByBranchId;
@@ -12,6 +13,7 @@ namespace Restaurant.API.Controllers.Territory
     {
         private readonly IMediator _mediator = mediator;
 
+        [Authorize(Roles = "SuperAdmin,Admin,Manager")]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] GetAllBranchesQuery query,
@@ -21,6 +23,7 @@ namespace Restaurant.API.Controllers.Territory
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,Manager,InventoryManager")]
         [HttpGet("{id}/stock-list")]
         public async Task<IActionResult> GetAllStock(
             [FromRoute] string id,

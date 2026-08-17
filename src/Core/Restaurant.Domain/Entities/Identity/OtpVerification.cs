@@ -15,6 +15,7 @@ namespace Restaurant.Domain.Entities.Identity
         public DateTime? UsedAt { get; private set; }
 
         public int FailedAttempts { get; private set; }
+        public bool IsAvailable { get; private set; }
 
         public User User { get; private set; } = null!;
     }
@@ -31,6 +32,10 @@ namespace Restaurant.Domain.Entities.Identity
             ExpiresAt = DateTime.UtcNow.AddMinutes(15);
         }
 
+        public void Invalidate()
+        {
+            IsAvailable = false;
+        }
         public void IncrementFailedAttempt()
         {
             FailedAttempts++;
@@ -39,6 +44,11 @@ namespace Restaurant.Domain.Entities.Identity
         public void MarkAsUsed()
         {
             UsedAt = DateTime.UtcNow;
+        }
+
+        public void Verify()
+        {
+
         }
     }
 }

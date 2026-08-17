@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Restaurant.Application.Features.Auth.Commands.CompleteProfile
+namespace Restaurant.Application.Features.Identity.PersonalProfiles.Commands.CompleteProfile
 {
     public class CompleteProfileCommandValidator
         : AbstractValidator<CompleteProfileCommand>

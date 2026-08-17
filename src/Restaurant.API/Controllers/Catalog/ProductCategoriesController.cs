@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Catalog.ProductCategories.Commands.Create;
@@ -18,6 +19,7 @@ namespace Restaurant.API.Controllers.Catalog
     {
         private readonly IMediator _mediator = mediator;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] GetAllProductCategoriesQuery query,
@@ -27,6 +29,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(
             [FromRoute] string id,
@@ -37,6 +40,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [AllowAnonymous]
         [HttpGet("by-name/{name}")]
         public async Task<IActionResult> GetByName(
             [FromRoute] string name,
@@ -47,6 +51,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(
             [FromBody] CreateProductCategoryRequest body,
@@ -57,6 +62,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             [FromRoute] string id,
@@ -68,6 +74,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(
             [FromRoute] string id,
@@ -78,6 +85,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPatch("{id}/restore")]
         public async Task<IActionResult> Restore(
             [FromRoute] string id,

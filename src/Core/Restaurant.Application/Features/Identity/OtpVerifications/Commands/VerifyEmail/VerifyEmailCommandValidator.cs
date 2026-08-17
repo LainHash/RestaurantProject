@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Restaurant.Application.Features.Auth.Commands.VerifyEmail
+namespace Restaurant.Application.Features.Identity.OtpVerifications.Commands.VerifyEmail
 {
     public class VerifyEmailCommandValidator
         : AbstractValidator<VerifyEmailCommand>

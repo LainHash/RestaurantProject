@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Identity.Roles.Commands.Create;
@@ -18,6 +19,7 @@ namespace Restaurant.API.Controllers.Identity
     {
         private readonly IMediator _mediator = mediator;
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] GetAllRolesQuery query,
@@ -27,6 +29,7 @@ namespace Restaurant.API.Controllers.Identity
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(
             [FromRoute] string id,
@@ -37,6 +40,7 @@ namespace Restaurant.API.Controllers.Identity
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         public async Task<IActionResult> Create(
             [FromBody] CreateRoleRequest body,
@@ -47,6 +51,7 @@ namespace Restaurant.API.Controllers.Identity
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             [FromRoute] string id,
@@ -58,6 +63,7 @@ namespace Restaurant.API.Controllers.Identity
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(
             [FromRoute] string id,
@@ -68,6 +74,7 @@ namespace Restaurant.API.Controllers.Identity
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPatch("{id}/restore")]
         public async Task<IActionResult> Restore(
             [FromRoute] string id,

@@ -5,6 +5,6 @@ namespace Restaurant.Domain.Repositories.Identity
 {
     public interface IOtpVerificationRepository : IRepository<OtpVerification>
     {
-        Task<OtpVerification?> FindAsync(int userId, OtpPurpose purpose, CancellationToken cancellationToken = default);
+        Task<OtpVerification?> FindActiveAsync(int userId, OtpPurpose purpose, CancellationToken cancellationToken = default);
     }
 }

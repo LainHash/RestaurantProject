@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Storage.Images.Queries.GetAll;
@@ -11,6 +12,7 @@ namespace Restaurant.API.Controllers.Storage
     {
         private readonly IMediator _mediator = mediator;
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] GetAllImagesQuery query,
