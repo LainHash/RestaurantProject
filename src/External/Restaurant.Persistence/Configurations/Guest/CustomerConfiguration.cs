@@ -33,6 +33,11 @@ namespace Restaurant.Persistence.Configurations.Guest
                 .WithOne(x => x.Customer)
                 .HasForeignKey<Customer>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.AvatarImage)
+                .WithOne(x => x.Customer)
+                .HasForeignKey<Customer>(x => x.AvatarImageId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

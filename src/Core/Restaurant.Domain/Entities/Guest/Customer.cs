@@ -1,5 +1,6 @@
 ﻿using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Identity;
+using Restaurant.Domain.Entities.Storage;
 
 namespace Restaurant.Domain.Entities.Guest
 {
@@ -11,6 +12,10 @@ namespace Restaurant.Domain.Entities.Guest
             $"CUS-{CustomerNumber:D6}";
 
         public int UserId { get; private set; }
+
+        public int? AvatarImageId { get; private set; }
+
+        public Image? AvatarImage { get; private set; } = null!;
 
         public User User { get; private set; } = null!;
     }
