@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Catalog.Ingredients.Commands.Create;
@@ -20,6 +21,7 @@ namespace Restaurant.API.Controllers.Catalog
     {
         private readonly IMediator _mediator = mediator;
 
+        [Authorize(Roles = "SuperAdmin,Admin,Manager,Chef,InventoryManager")]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] GetAllIngredientsQuery query,
@@ -29,6 +31,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,Manager,Chef,InventoryManager")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(
             [FromRoute] string id,
@@ -39,6 +42,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,InventoryManager")]
         [HttpPost]
         public async Task<IActionResult> Create(
             [FromBody] CreateIngredientRequest body,
@@ -49,6 +53,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,InventoryManager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             [FromRoute] string id,
@@ -60,6 +65,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(
             [FromRoute] string id,
@@ -70,6 +76,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPatch("{id}/restore")]
         public async Task<IActionResult> Restore(
             [FromRoute] string id,
@@ -80,6 +87,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,Manager,InventoryManager")]
         [HttpGet("{id}/stock-list")]
         public async Task<IActionResult> GetAllStock(
             [FromRoute] string id,
@@ -90,6 +98,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,Manager,InventoryManager")]
         [HttpPatch("{ingredientId}/branch/{branchId}/update-quantity")]
         public async Task<IActionResult> UpdateQuantity(
             [FromRoute] string ingredientId,

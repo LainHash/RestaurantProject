@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Catalog.Products.Commands.Create;
@@ -25,6 +26,7 @@ namespace Restaurant.API.Controllers.Catalog
     {
         private readonly IMediator _mediator = mediator;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] GetAllProductsQuery query,
@@ -34,6 +36,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(
             [FromRoute] string id,
@@ -44,6 +47,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(
             [FromBody] CreateProductRequest body,
@@ -54,6 +58,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             [FromRoute] string id,
@@ -65,6 +70,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(
             [FromRoute] string id,
@@ -75,6 +81,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPatch("{id}/restore")]
         public async Task<IActionResult> Restore(
             [FromRoute] string id,
@@ -85,6 +92,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,Manager,InventoryManager")]
         [HttpGet("{id}/stock-list")]
         public async Task<IActionResult> GetAllStock(
             [FromRoute] string id,
@@ -95,6 +103,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,Manager,InventoryManager")]
         [HttpPatch("{productId}/branch/{branchId}/update-quantity")]
         public async Task<IActionResult> UpdateQuantity(
             [FromRoute] string productId,
@@ -107,6 +116,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/images")]
         public async Task<IActionResult> GetAllImages(
             [FromRoute] string id,
@@ -117,6 +127,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPost("{id}/images")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UploadImage(
@@ -136,6 +147,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,Manager,Chef")]
         [HttpGet("{id}/recipe-list")]
         public async Task<IActionResult> GetAllRecipes(
             [FromRoute] string id,

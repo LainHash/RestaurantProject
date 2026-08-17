@@ -1,11 +1,9 @@
-﻿using MediatR;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Auth.Commands.Login;
 using Restaurant.Application.Features.Auth.Commands.Register;
-using Restaurant.Application.Features.Identity.OtpVerifications.Commands.ResendVerification;
-using Restaurant.Application.Features.Identity.OtpVerifications.Commands.VerifyEmail;
-using Restaurant.Application.Features.Identity.PersonalProfiles.Commands.CompleteProfile;
 using Restaurant.Contract.DTOs.Auth;
 
 namespace Restaurant.API.Controllers.Auth
@@ -16,6 +14,7 @@ namespace Restaurant.API.Controllers.Auth
     {
         private readonly IMediator _mediator = mediator;
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(
             [FromBody] LoginRequest body,
@@ -26,6 +25,7 @@ namespace Restaurant.API.Controllers.Auth
             return this.ToActionResult(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(
             [FromBody] RegisterRequest body,

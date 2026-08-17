@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Identity.OtpVerifications.Commands.ResendVerification;
@@ -14,6 +15,7 @@ namespace Restaurant.API.Controllers.Identity
     {
         private readonly IMediator _mediator = mediator;
 
+        [AllowAnonymous]
         [HttpPost("verify-email")]
         public async Task<IActionResult> VerifyEmail(
             [FromBody] VerifyEmailRequest body,
@@ -24,6 +26,7 @@ namespace Restaurant.API.Controllers.Identity
             return this.ToActionResult(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("resend-verification")]
         public async Task<IActionResult> ResendVerification(
             [FromBody] ResendVerificationRequest body,
@@ -34,6 +37,7 @@ namespace Restaurant.API.Controllers.Identity
             return this.ToActionResult(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("complete-profile")]
         public async Task<IActionResult> CompleteProfile(
             [FromBody] CompleteProfileRequest body,
