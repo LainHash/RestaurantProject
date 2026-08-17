@@ -19,15 +19,14 @@ namespace Restaurant.API.Controllers.Guest
         [HttpGet]
         public async Task<IActionResult> GetOne(CancellationToken cancellationToken)
         {
-            string? userId = null!;
+            string userId = null!;
 
             if (User.Identity?.IsAuthenticated == true)
             {
-                userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                                   ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+                userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             }
 
-            var query = new GetCustomerByUserQuery(userId!);
+            var query = new GetCustomerByUserQuery(userId);
             var result = await _mediator.Send(query, cancellationToken);
             return this.ToActionResult(result);
         }

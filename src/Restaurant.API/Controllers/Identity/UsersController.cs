@@ -5,7 +5,10 @@ using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Identity.OtpVerifications.Commands.ResendVerification;
 using Restaurant.Application.Features.Identity.OtpVerifications.Commands.VerifyEmail;
 using Restaurant.Application.Features.Identity.PersonalProfiles.Commands.CompleteProfile;
+using Restaurant.Application.Features.Identity.PersonalProfiles.Commands.Update;
 using Restaurant.Contract.DTOs.Auth;
+using Restaurant.Contract.DTOs.Identity.PersonalProfiles;
+using System.Security.Claims;
 
 namespace Restaurant.API.Controllers.Identity
 {
@@ -44,6 +47,24 @@ namespace Restaurant.API.Controllers.Identity
             CancellationToken cancellationToken)
         {
             var command = new CompleteProfileCommand(body);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [Authorize(Roles = "Customer")]
+        [HttpPost("update-profile")]
+        public async Task<IActionResult> UpdateProfile(
+            [FromBody] UpdatePersonalProfileRequest body,
+            CancellationToken cancellationToken)
+        {
+            string userId = null!;
+
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            }
+
+            var command = new UpdatePersonalProfileCommand(userId, body);
             var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }

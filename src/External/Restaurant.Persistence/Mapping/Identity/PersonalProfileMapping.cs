@@ -12,6 +12,8 @@ namespace Restaurant.Persistence.Mapping.Identity
             CreateMap<CompleteProfileRequest, PersonalProfile>();
 
             CreateMap<PersonalProfile, PersonalProfileResponse>();
+
+            CreateMap<UpdatePersonalProfileRequest, PersonalProfile>();
         }
     }
 }
