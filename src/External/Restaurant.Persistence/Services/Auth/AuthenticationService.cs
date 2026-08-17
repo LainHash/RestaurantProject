@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ConvenienceStore.Contract.DTOs.Authentication;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Restaurant.Application.Features.Auth.Commands.CompleteProfile;
 using Restaurant.Application.Features.Auth.Commands.Login;
@@ -92,7 +91,7 @@ namespace Restaurant.Persistence.Services.Auth
             var response = new AuthenticationResponse(user, token);
 
             return Result<AuthenticationResponse>
-                .Succeed(response, "Login successfully.", HttpStatusCode.Accepted);
+                .Succeed(response, "Login successfully.");
         }
 
         public async Task<Result> RegisterAsync(
@@ -121,16 +120,12 @@ namespace Restaurant.Persistence.Services.Auth
                     .SetRole(customerRole.Id);
                 _userRepository.Add(user);
 
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
-
                 var verificationCode = GenerateCode();
                 var otpVerification = new OtpVerification(
                     user.Id,
                     _otpHasher.HashOtp(verificationCode),
                     OtpPurpose.EmailVerification);
                 _otpVerificationRepository.Add(otpVerification);
-
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 var customer = new Customer(user.Id);
                 _customerRepository.Add(customer);
@@ -179,7 +174,7 @@ namespace Restaurant.Persistence.Services.Auth
                     .Fail("Account is already active.", HttpStatusCode.Conflict);
             }
 
-            var verification = await _otpVerificationRepository.FindAsync(user.Id, OtpPurpose.EmailVerification, cancellationToken);
+            var verification = await _otpVerificationRepository.FindActiveAsync(user.Id, OtpPurpose.EmailVerification, cancellationToken);
 
             if (verification is null)
             {
@@ -196,7 +191,7 @@ namespace Restaurant.Persistence.Services.Auth
             if (verification.ExpiresAt <= DateTime.UtcNow)
             {
                 return Result
-                    .Fail("OTP has expired", HttpStatusCode.RequestTimeout);
+                    .Fail("OTP has expired");
             }
 
             if (verification.FailedAttempts >= MaxFailedAttempts)
@@ -219,7 +214,7 @@ namespace Restaurant.Persistence.Services.Auth
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result
-                .Succeed("Email verified successfully. You can now login.", HttpStatusCode.Accepted);
+                .Succeed("Email verified successfully. You can now login.");
         }
 
         public async Task<Result> ResendVerificationAsync(
@@ -239,28 +234,32 @@ namespace Restaurant.Persistence.Services.Auth
                     .Fail("Account is already active.", HttpStatusCode.Conflict);
             }
 
+            var otpVerification = await _otpVerificationRepository.FindActiveAsync(user.Id, OtpPurpose.EmailVerification, cancellationToken);
+            if( otpVerification is not null)
+            {
+                otpVerification.Invalidate();
+
+                if (otpVerification.CreatedAt > DateTime.UtcNow.AddSeconds(60))
+                {
+                    return Result
+                        .Fail("Please wait 60 senconds to resend verification.");
+                }
+            }
+
             var verificationCode = GenerateCode();
-            var otpVerification = new OtpVerification(
+            var newOtpVerification = new OtpVerification(
                 user.Id,
                 _otpHasher.HashOtp(verificationCode),
                 OtpPurpose.EmailVerification);
-            _otpVerificationRepository.Add(otpVerification);
+            _otpVerificationRepository.Add(newOtpVerification);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            try
-            {
-                var message = new EmailMessage(user.UserName, verificationCode);
-                await _emailService.SendEmailAsync(user.Email, message, cancellationToken);
+            var message = new EmailMessage(user.UserName, verificationCode);
+            await _emailService.SendEmailAsync(user.Email, message, cancellationToken);
 
-                return Result
-                    .Succeed("Verification email resent. Please check your inbox.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Send verification email failed.");
-                throw;
-            }
+            return Result
+                .Succeed("Verification email resent. Please check your inbox.");
         }
 
         public async Task<Result> CompleteProfileAsync(
@@ -281,13 +280,14 @@ namespace Restaurant.Persistence.Services.Auth
             }
 
             var personalProfile = await _personalProfileRepository.FindByUserAsync(user.Id, cancellationToken);
-            if(personalProfile is not null)
+            if (personalProfile is not null)
             {
                 return Result
                     .Fail("Profile has already been completed.", HttpStatusCode.Conflict);
             }
 
-            personalProfile = _mapper.Map<PersonalProfile>(command.Body);
+            personalProfile = _mapper.Map<PersonalProfile>(command.Body)
+                .SetUser(user.Id);
             _personalProfileRepository.Add(personalProfile);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -19,6 +19,9 @@ namespace Restaurant.Persistence.Configurations.Identity
             builder.Property(x => x.PublicId)
                 .IsRequired();
 
+            builder.Property(x => x.IsAvailable)
+                .HasDefaultValue(true);
+
             builder.Property(x => x.Purpose)
                 .IsRequired()
                 .HasConversion<string>();

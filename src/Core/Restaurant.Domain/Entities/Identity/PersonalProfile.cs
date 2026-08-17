@@ -2,7 +2,7 @@
 
 namespace Restaurant.Domain.Entities.Identity
 {
-    public class PersonalProfile : SoftDeletableEntity
+    public partial class PersonalProfile : SoftDeletableEntity
     {
         public string FirstName { get; private set; } = string.Empty;
         public string LastName { get; private set; } = string.Empty;
@@ -20,5 +20,19 @@ namespace Restaurant.Domain.Entities.Identity
         public int UserId { get; private set; }
 
         public User User { get; private set; } = null!;
+    }
+
+    public partial class PersonalProfile
+    {
+        public PersonalProfile()
+        {
+
+        }
+
+        public PersonalProfile SetUser(int userId)
+        {
+            UserId = userId;
+            return this;
+        }
     }
 }

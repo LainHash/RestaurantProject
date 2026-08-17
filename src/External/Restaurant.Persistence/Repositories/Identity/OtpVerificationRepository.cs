@@ -11,11 +11,12 @@ namespace Restaurant.Persistence.Repositories.Identity
     {
         private readonly RestaurantDbContext _context = context;
 
-        public async Task<OtpVerification?> FindAsync(int userId, OtpPurpose purpose, CancellationToken cancellationToken = default)
+        public async Task<OtpVerification?> FindActiveAsync(int userId, OtpPurpose purpose, CancellationToken cancellationToken = default)
         {
             return await _context.OtpVerifications
                 .Where(x => x.UserId == userId &&
                             x.Purpose == purpose &&
+                            x.IsAvailable &&
                             x.UsedAt == null &&
                             x.ExpiresAt > DateTime.UtcNow)
                 .FirstOrDefaultAsync(cancellationToken);
