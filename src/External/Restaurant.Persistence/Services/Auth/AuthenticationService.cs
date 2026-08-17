@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
 using ConvenienceStore.Contract.DTOs.Authentication;
 using Microsoft.Extensions.Logging;
-using Restaurant.Application.Features.Auth.Commands.CompleteProfile;
 using Restaurant.Application.Features.Auth.Commands.Login;
 using Restaurant.Application.Features.Auth.Commands.Register;
 using Restaurant.Application.Services.Auth;
 using Restaurant.Application.Services.Business;
-using Restaurant.Application.Services.Email;
 using Restaurant.Application.Services.Identity;
 using Restaurant.Domain.Entities.Guest;
 using Restaurant.Domain.Entities.Identity;
-using Restaurant.Domain.Enums;
 using Restaurant.Domain.Models.Messages;
 using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Repositories.Guest;
@@ -24,7 +21,6 @@ namespace Restaurant.Persistence.Services.Auth
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly ICustomerRepository _customerRepository;
-        private readonly IPersonalProfileRepository _personalProfileRepository;
 
         private readonly IPasswordHasher _passwordHasher;
         private readonly IOtpVerificationService _otpVerificationService;
@@ -42,7 +38,6 @@ namespace Restaurant.Persistence.Services.Auth
             IMapper mapper,
             ILogger<AuthenticationService> logger,
             ICustomerRepository customerRepository,
-            IPersonalProfileRepository personalProfileRepository,
             IOtpVerificationService otpVerificationService)
         {
             _userRepository = userRepository;
@@ -53,7 +48,6 @@ namespace Restaurant.Persistence.Services.Auth
             _mapper = mapper;
             _logger = logger;
             _customerRepository = customerRepository;
-            _personalProfileRepository = personalProfileRepository;
             _otpVerificationService = otpVerificationService;
         }
 
@@ -131,40 +125,6 @@ namespace Restaurant.Persistence.Services.Auth
                 return Result
                     .Fail("Register request failed.", HttpStatusCode.InternalServerError);
             }
-        }
-
-        public async Task<Result> CompleteProfileAsync(
-            CompleteProfileCommand command,
-            CancellationToken cancellationToken = default)
-        {
-            var user = await _userRepository.FindByEmailAsync(command.Body.Email, cancellationToken);
-            if (user is null)
-            {
-                return Result
-                    .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
-            }
-
-            if (!user.IsActive)
-            {
-                return Result
-                    .Fail("Account is not active. Please verify your email first.", HttpStatusCode.PreconditionRequired);
-            }
-
-            var personalProfile = await _personalProfileRepository.FindByUserAsync(user.Id, cancellationToken);
-            if (personalProfile is not null)
-            {
-                return Result
-                    .Fail("Profile has already been completed.", HttpStatusCode.Conflict);
-            }
-
-            personalProfile = _mapper.Map<PersonalProfile>(command.Body)
-                .SetUser(user.Id);
-            _personalProfileRepository.Add(personalProfile);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            return Result
-                .Succeed("Profile completed successfully.", HttpStatusCode.Accepted);
         }
     }
 }
