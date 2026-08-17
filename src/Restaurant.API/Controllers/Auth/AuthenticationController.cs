@@ -4,8 +4,8 @@ using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Auth.Commands.CompleteProfile;
 using Restaurant.Application.Features.Auth.Commands.Login;
 using Restaurant.Application.Features.Auth.Commands.Register;
-using Restaurant.Application.Features.Auth.Commands.ResendVerification;
-using Restaurant.Application.Features.Auth.Commands.VerifyEmail;
+using Restaurant.Application.Features.Identity.OtpVerifications.Commands.ResendVerification;
+using Restaurant.Application.Features.Identity.OtpVerifications.Commands.VerifyEmail;
 using Restaurant.Contract.DTOs.Auth;
 
 namespace Restaurant.API.Controllers.Auth
