@@ -26,11 +26,11 @@ namespace Restaurant.Application.Services.Catalog
             UpdateProductCategorySpecification specification,
             CancellationToken cancellationToken);
 
-        Task<Result<object>> DeleteAsync(
+        Task<Result> DeleteAsync(
             ISpecification<ProductCategory> specification,
             CancellationToken cancellationToken);
 
-        Task<Result<object>> RestoreAsync(
+        Task<Result> RestoreAsync(
             ISpecification<ProductCategory> specification,
             CancellationToken cancellationToken);
     }

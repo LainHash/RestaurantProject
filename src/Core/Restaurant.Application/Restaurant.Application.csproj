@@ -19,8 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Features\Identity\Roles\Commands\Delete\" />
-	  <Folder Include="Features\Identity\Roles\Commands\Restore\" />
+	  <Folder Include="Features\Auth\Commands\RefreshToken\" />
 	</ItemGroup>
 
 </Project>

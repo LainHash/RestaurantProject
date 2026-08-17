@@ -1,4 +1,6 @@
 ﻿using Restaurant.Application.Features.Identity.Roles.Commands.Create;
+using Restaurant.Application.Features.Identity.Roles.Commands.Delete;
+using Restaurant.Application.Features.Identity.Roles.Commands.Restore;
 using Restaurant.Application.Features.Identity.Roles.Commands.Update;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetAll;
 using Restaurant.Application.Features.Identity.Roles.Queries.GetById;
@@ -24,6 +26,14 @@ namespace Restaurant.Application.Services.Identity
         Task<Result<RoleResponse>> UpdateAsync(
             UpdateRoleCommand command,
             UpdateRoleSpecification specification,
+            CancellationToken cancellationToken = default);
+
+        Task<Result> DeleteAsync(
+            DeleteRoleSpecification specification,
+            CancellationToken cancellationToken = default);
+
+        Task<Result> RestoreAsync(
+            RestoreRoleSpecification specification,
             CancellationToken cancellationToken = default);
     }
 }

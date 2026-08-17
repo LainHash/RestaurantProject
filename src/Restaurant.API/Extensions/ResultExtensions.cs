@@ -11,5 +11,12 @@ namespace Restaurant.API.Extensions
         {
             return controller.StatusCode(result.StatusCode, result);
         }
+
+        public static IActionResult ToActionResult(
+            this ControllerBase controller,
+            Result result)
+        {
+            return controller.StatusCode(result.StatusCode, result);
+        }
     }
 }

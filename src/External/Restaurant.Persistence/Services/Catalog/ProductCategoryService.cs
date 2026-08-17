@@ -108,20 +108,20 @@ namespace Restaurant.Persistence.Services.Catalog
                 .Succeed(response, Success<ProductCategory>.Updated, HttpStatusCode.OK);
         }
 
-        public async Task<Result<object>> DeleteAsync(
+        public async Task<Result> DeleteAsync(
             ISpecification<ProductCategory> specification,
             CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.FindAsync(specification, cancellationToken);
             if (category == null)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<ProductCategory>.NotFound, HttpStatusCode.NotFound);
             }
 
             if(category.IsDeleted)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<ProductCategory>.AlreadyDeleted, HttpStatusCode.BadRequest);
             }
 
@@ -129,24 +129,24 @@ namespace Restaurant.Persistence.Services.Catalog
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result<object>
-                .Succeed(default, Success<ProductCategory>.Deleted);
+            return Result
+                .Succeed(Success<ProductCategory>.Deleted);
         }
 
-        public async Task<Result<object>> RestoreAsync(
+        public async Task<Result> RestoreAsync(
             ISpecification<ProductCategory> specification,
             CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.FindAsync(specification, cancellationToken);
             if (category == null)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<ProductCategory>.NotFound, HttpStatusCode.NotFound);
             }
 
             if(!category.IsDeleted)
             {
-                return Result<object>
+                return Result
                     .Fail(Error<ProductCategory>.NotYetDeleted, HttpStatusCode.BadRequest);
             }
 
@@ -154,8 +154,8 @@ namespace Restaurant.Persistence.Services.Catalog
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result<object>
-                .Succeed(default, Success<ProductCategory>.Restored);
+            return Result
+                .Succeed(Success<ProductCategory>.Restored);
         }
     }
 }
