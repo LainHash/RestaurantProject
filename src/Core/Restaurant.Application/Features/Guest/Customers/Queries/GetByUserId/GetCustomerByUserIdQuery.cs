@@ -2,9 +2,9 @@
 using Restaurant.Contract.DTOs.Guest.Customers;
 using Restaurant.Domain.Models.Results;
 
-namespace Restaurant.Application.Features.Guest.Customers.Queries.GetByUser
+namespace Restaurant.Application.Features.Guest.Customers.Queries.GetByUserId
 {
-    public record GetCustomerByUserQuery(string UserId)
+    public record GetCustomerByUserIdQuery(string UserId)
         : IRequest<Result<CustomerResponse>>
     {
     }

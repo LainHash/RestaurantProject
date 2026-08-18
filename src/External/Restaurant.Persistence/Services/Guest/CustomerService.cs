@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Restaurant.Application.Features.Guest.Customers.Queries.GetByUser;
+using Restaurant.Application.Features.Guest.Customers.Queries.GetByUserId;
 using Restaurant.Application.Services.Guest;
 using Restaurant.Contract.DTOs.Guest.Customers;
 using Restaurant.Domain.Entities.Guest;
@@ -24,8 +24,8 @@ namespace Restaurant.Persistence.Services.Guest
             _mapper = mapper;
         }
 
-        public async Task<Result<CustomerResponse>> GetByUserAsync(
-            GetCustomerByUserSpecification specification,
+        public async Task<Result<CustomerResponse>> GetByUserIdAsync(
+            GetCustomerByUserIdSpecification specification,
             CancellationToken cancellationToken)
         {
             var customer = await _customerRepository.FindAsync(specification, cancellationToken);

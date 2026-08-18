@@ -20,6 +20,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Features\Auth\Commands\RefreshToken\" />
+	  <Folder Include="Features\Guest\Wallets\" />
 	</ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
-using Restaurant.Application.Features.Guest.Customers.Queries.GetByUser;
+using Restaurant.Application.Features.Guest.Customers.Queries.GetByUserId;
 using System.Security.Claims;
 
 namespace Restaurant.API.Controllers.Guest
@@ -24,7 +24,7 @@ namespace Restaurant.API.Controllers.Guest
                 userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             }
 
-            var query = new GetCustomerByUserQuery(userId);
+            var query = new GetCustomerByUserIdQuery(userId);
             var result = await _mediator.Send(query, cancellationToken);
             return this.ToActionResult(result);
         }
