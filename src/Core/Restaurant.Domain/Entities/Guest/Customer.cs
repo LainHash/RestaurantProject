@@ -18,6 +18,8 @@ namespace Restaurant.Domain.Entities.Guest
         public Image? AvatarImage { get; private set; } = null!;
 
         public User User { get; private set; } = null!;
+
+        public Wallet? Wallet { get; private set; }
     }
 
     public partial class Customer
