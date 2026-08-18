@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetAll;
+using Restaurant.Application.Features.Guest.Customers.Queries.GetById;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetByUserId;
 using Restaurant.Application.Services.Guest;
 using Restaurant.Contract.DTOs.Guest.Customers;
@@ -33,6 +34,22 @@ namespace Restaurant.Persistence.Services.Guest
 
             var response = _mapper.Map<IEnumerable<CustomerResponse>>(customers);
             return Result<IEnumerable<CustomerResponse>>
+                .Succeed(response, Success<Customer>.Retrieved);
+        }
+
+        public async Task<Result<CustomerResponse>> GetByIdAsync(
+            GetCustomerByIdSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var customer = await _customerRepository.FindAsync(specification, cancellationToken);
+            if (customer is null)
+            {
+                return Result<CustomerResponse>
+                    .Fail(Error<Customer>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var response = _mapper.Map<CustomerResponse>(customer);
+            return Result<CustomerResponse>
                 .Succeed(response, Success<Customer>.Retrieved);
         }
 
