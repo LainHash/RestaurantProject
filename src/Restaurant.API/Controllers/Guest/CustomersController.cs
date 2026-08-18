@@ -1,17 +1,15 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetByUser;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Restaurant.API.Controllers.Guest
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Customer,SuperAdmin")]
+    [Authorize(Roles = "Customer")]
     public class CustomersController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
