@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
+using Restaurant.Application.Features.Guest.Customers.Queries.GetAll;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetByUserId;
 using System.Security.Claims;
 
@@ -15,6 +16,16 @@ namespace Restaurant.API.Controllers.Guest
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] GetAllCustomersQuery query,
+            CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(query, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+
+        [HttpGet("user")]
         public async Task<IActionResult> GetOne(CancellationToken cancellationToken)
         {
             string userId = null!;

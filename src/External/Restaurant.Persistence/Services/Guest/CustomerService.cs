@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Restaurant.Application.Features.Guest.Customers.Queries.GetAll;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetByUserId;
 using Restaurant.Application.Services.Guest;
 using Restaurant.Contract.DTOs.Guest.Customers;
@@ -22,6 +23,17 @@ namespace Restaurant.Persistence.Services.Guest
         {
             _customerRepository = customerRepository;
             _mapper = mapper;
+        }
+
+        public async Task<Result<IEnumerable<CustomerResponse>>> GetAllAsync(
+            GetAllCustomersSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var customers = await _customerRepository.ToListAsync(specification, cancellationToken);
+
+            var response = _mapper.Map<IEnumerable<CustomerResponse>>(customers);
+            return Result<IEnumerable<CustomerResponse>>
+                .Succeed(response, Success<Customer>.Retrieved);
         }
 
         public async Task<Result<CustomerResponse>> GetByUserIdAsync(
