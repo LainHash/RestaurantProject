@@ -107,6 +107,8 @@ namespace Restaurant.Persistence
 
             services.AddScoped<ICustomerService, CustomerService>();
 
+            services.AddScoped<IWalletService, WalletService>();
+
             return services;
         }
 

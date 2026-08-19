@@ -38,7 +38,6 @@ namespace Restaurant.API.Controllers.Guest
 
 
         [HttpGet("user")]
-        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetOne(CancellationToken cancellationToken)
         {
             string userId = null!;

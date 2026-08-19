@@ -43,6 +43,8 @@ namespace Restaurant.Persistence.Context
         public DbSet<PersonalProfile> PersonalProfiles { get; set; } = null!;
         public DbSet<Customer> Customers { get; set; } = null!;
 
+        public DbSet<Wallet> Wallets { get; set; } = null!;
+
         // ── Model building ──────────────────────────────────────────────────
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

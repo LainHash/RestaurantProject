@@ -11,7 +11,8 @@ namespace Restaurant.Persistence.Mapping.Guest
             CreateMap<Customer, CustomerResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId))
                 .ForMember(dest => dest.Account, opt => opt.MapFrom(src => src.User))
-                .ForMember(dest => dest.PersonalProfile, opt => opt.MapFrom(src => src.User.PersonalProfile));
+                .ForMember(dest => dest.PersonalProfile, opt => opt.MapFrom(src => src.User.PersonalProfile))
+                .ForMember(dest => dest.Wallet, opt => opt.MapFrom(src => src.User.Customer!.Wallet));
         }
     }
 }

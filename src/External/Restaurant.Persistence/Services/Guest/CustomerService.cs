@@ -16,14 +16,18 @@ namespace Restaurant.Persistence.Services.Guest
     {
         private readonly ICustomerRepository _customerRepository;
 
+        private readonly IWalletService _walletService;
+
         private readonly IMapper _mapper;
 
         public CustomerService(
             ICustomerRepository customerRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IWalletService walletService)
         {
             _customerRepository = customerRepository;
             _mapper = mapper;
+            _walletService = walletService;
         }
 
         public async Task<Result<IEnumerable<CustomerResponse>>> GetAllAsync(
@@ -58,11 +62,13 @@ namespace Restaurant.Persistence.Services.Guest
             CancellationToken cancellationToken)
         {
             var customer = await _customerRepository.FindAsync(specification, cancellationToken);
-            if(customer is null)
+            if (customer is null)
             {
                 return Result<CustomerResponse>
                     .Fail(Error<Customer>.NotFound, HttpStatusCode.NotFound);
             }
+            
+            await _walletService.GetOrCreateAsync(customer.Id, () => new Wallet(customer.Id), cancellationToken);
 
             var response = _mapper.Map<CustomerResponse>(customer);
             return Result<CustomerResponse>
