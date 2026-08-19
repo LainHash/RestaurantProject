@@ -2,7 +2,7 @@
 
 namespace Restaurant.Domain.Entities.Personnel
 {
-    public class Position : SoftDeletableEntity
+    public partial class Position : SoftDeletableEntity
     {
         public string Name { get; private set; } = null!;
         public string? Description { get; private set; }
@@ -11,5 +11,17 @@ namespace Restaurant.Domain.Entities.Personnel
         public Department Department { get; private set; } = null!;
 
         public ICollection<Employee> Employees { get; private set; } = [];
+    }
+
+    public partial class Position
+    {
+        public Position() { }
+
+
+        public Position SetDepartment(int departmentId)
+        {
+            DepartmentId = departmentId;
+            return this;
+        }
     }
 }

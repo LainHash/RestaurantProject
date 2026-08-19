@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
-using Restaurant.Domain.Entities.Storage;
 using Restaurant.Persistence.Context;
 using Restaurant.Persistence.Seeders.Catalog;
 using Restaurant.Persistence.Seeders.Identity;
 using Restaurant.Persistence.Seeders.Inventory;
+using Restaurant.Persistence.Seeders.Personnel;
 using Restaurant.Persistence.Seeders.Pricing;
 using Restaurant.Persistence.Seeders.Production;
 using Restaurant.Persistence.Seeders.Storage;
@@ -43,6 +43,9 @@ namespace Restaurant.Persistence.Seeders
             await SeedAsync<RecipeIngredientSeeder>(_context);
 
             await SeedAsync<RoleSeeder>(_context);
+
+            await SeedAsync<DepartmentSeeder>(_context);
+            await SeedAsync<PositionSeeder>(_context);
         }
 
         private async Task SeedAsync<TSeeder>(RestaurantDbContext context) where TSeeder : IDataSeeder
