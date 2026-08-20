@@ -1,3 +1,4 @@
+using Restaurant.Domain.Extensions;
 using System.Linq.Expressions;
 
 namespace Restaurant.Domain.Specifications
@@ -28,6 +29,11 @@ namespace Restaurant.Domain.Specifications
         public bool IgnoreQueryFilters { get; private set; }
 
         public bool IsSoftDeleteEnabled { get; private set; }
+
+        protected void AddCriteria(Expression<Func<TEntity, bool>> criteria)
+        {
+            Criteria = Criteria is null ? criteria : Criteria.And(criteria);
+        }
 
         protected void AddIgnoreQueryFilters()
         {

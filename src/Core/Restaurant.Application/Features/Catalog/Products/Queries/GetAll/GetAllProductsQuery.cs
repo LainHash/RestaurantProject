@@ -5,7 +5,7 @@ using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Features.Catalog.Products.Queries.GetAll
 {
-    public record GetAllProductsQuery() 
+    public record GetAllProductsQuery(string? CategoryId, string? BrandId) 
         : PageQuery, IRequest<PageResult<IEnumerable<ProductResponse>>>
     {
     }

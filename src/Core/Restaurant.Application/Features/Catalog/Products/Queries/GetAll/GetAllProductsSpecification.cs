@@ -23,9 +23,21 @@ namespace Restaurant.Application.Features.Catalog.Products.Queries.GetAll
 
             if (!string.IsNullOrWhiteSpace(query.Keyword))
             {
-                Criteria = p =>
+                AddCriteria(p =>
                     EF.Functions.Like(p.Name, $"%{query.Keyword}%") ||
-                    EF.Functions.Like(p.Description, $"%{query.Keyword}%");
+                    EF.Functions.Like(p.Description, $"%{query.Keyword}%"));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.CategoryId))
+            {
+                AddCriteria(p =>
+                    p.ProductCategory.PublicId == query.CategoryId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.BrandId))
+            {
+                AddCriteria(p =>
+                    p.Brand!.PublicId == query.BrandId);
             }
 
             switch (query.SortField)
