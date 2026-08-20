@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Identity.PersonalProfiles.Commands.CompleteProfile;
+using Restaurant.Application.Features.Identity.PersonalProfiles.Commands.Update;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Identity;
+using Restaurant.Contract.DTOs.Identity.PersonalProfiles;
 using Restaurant.Domain.Entities.Identity;
 using Restaurant.Domain.Models.Messages;
 using Restaurant.Domain.Models.Results;
@@ -62,6 +64,27 @@ namespace Restaurant.Persistence.Services.Identity
 
             return Result
                 .Succeed("Profile completed successfully.", HttpStatusCode.Accepted);
+        }
+
+        public async Task<Result<PersonalProfileResponse>> UpdatePersonalProfileAsync(
+            UpdatePersonalProfileCommand command,
+            UpdatePersonalProfileSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var personalProfile = await _personalProfileRepository.FindAsync(specification, cancellationToken);
+            if(personalProfile is null)
+            {
+                return Result<PersonalProfileResponse>
+                    .Fail(Error<PersonalProfile>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            _mapper.Map(command.Body, personalProfile);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var response = _mapper.Map<PersonalProfileResponse>(personalProfile);
+            return Result<PersonalProfileResponse>
+                .Succeed(response, Success<PersonalProfile>.Updated);
         }
     }
 }

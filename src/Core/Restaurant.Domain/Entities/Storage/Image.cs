@@ -1,4 +1,5 @@
 ﻿using Restaurant.Domain.Abstraction;
+using Restaurant.Domain.Entities.Guest;
 
 namespace Restaurant.Domain.Entities.Storage
 {
@@ -13,6 +14,7 @@ namespace Restaurant.Domain.Entities.Storage
         public string ContentType { get; private set; } = null!;
 
         public ProductImage ProductImage { get; private set; } = null!;
+        public Customer Customer { get; private set; } = null!;
     }
 
     public partial class Image
