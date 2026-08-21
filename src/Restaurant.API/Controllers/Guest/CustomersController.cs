@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
+using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByUserId;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetAll;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetById;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetByUserId;
@@ -59,6 +60,21 @@ namespace Restaurant.API.Controllers.Guest
             CancellationToken cancellationToken)
         {
             var query = new GetWishlistByCustomerIdQuery(id);
+            var result = await _mediator.Send(query, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
+        [HttpGet("user/wishlist")]
+        public async Task<IActionResult> GetWishlist(CancellationToken cancellationToken)
+        {
+            string userId = null!;
+
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            }
+
+            var query = new GetWishlistByUserIdQuery(userId);
             var result = await _mediator.Send(query, cancellationToken);
             return this.ToActionResult(result);
         }

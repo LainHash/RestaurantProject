@@ -14,5 +14,15 @@ namespace Restaurant.Persistence.Repositories.Identity
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
         }
+
+        public async Task<User?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
+        public async Task<User?> FindByIdAsync(string id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.PublicId == id, cancellationToken);
+        }
     }
 }

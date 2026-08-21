@@ -20,7 +20,7 @@ namespace Restaurant.Persistence.Repositories.Guest
             return await _context.Customers.FirstOrDefaultAsync(x => x.PublicId == id, cancellationToken);
         }
 
-        public async Task<Customer?> FindByUserAsync(int userId, CancellationToken cancellationToken = default)
+        public async Task<Customer?> FindByUserIdAsync(int userId, CancellationToken cancellationToken = default)
         {
             return await _context.Customers.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
         }
