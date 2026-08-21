@@ -1,4 +1,5 @@
-﻿using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
+﻿using Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem;
+using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetBySessionId;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByUserId;
 using Restaurant.Contract.DTOs.Commerce.Wishlists;
@@ -21,6 +22,11 @@ namespace Restaurant.Application.Services.Commerce
         Task<Result<WishlistResponse>> GetByUserIdAsync(
             GetWishlistByUserIdQuery query,
             GetWishlistByUserIdSpecification specification,
+            CancellationToken cancellationToken = default);
+
+        Task<Result<WishlistResponse>> AddItemAsync(
+            AddWishlistItemCommand command,
+            AddWishlistItemSpecification specification,
             CancellationToken cancellationToken = default);
     }
 }

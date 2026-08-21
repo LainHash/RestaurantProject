@@ -2,12 +2,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
+using Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByUserId;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetAll;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetById;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetByUserId;
+using Restaurant.Contract.DTOs.Commerce.WishlistItems;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.API.Controllers.Guest
 {

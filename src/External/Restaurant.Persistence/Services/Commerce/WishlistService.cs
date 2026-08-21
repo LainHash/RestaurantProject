@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
+using Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetBySessionId;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByUserId;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Commerce;
 using Restaurant.Contract.DTOs.Commerce.Wishlists;
+using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Entities.Guest;
 using Restaurant.Domain.Entities.Identity;
 using Restaurant.Domain.Models.Messages;
 using Restaurant.Domain.Models.Results;
+using Restaurant.Domain.Repositories.Catalog;
 using Restaurant.Domain.Repositories.Commerce;
 using Restaurant.Domain.Repositories.Guest;
 using Restaurant.Domain.Repositories.Identity;
@@ -21,6 +24,7 @@ namespace Restaurant.Persistence.Services.Commerce
     {
         private readonly IWishlistRepository _wishlistRepository;
         private readonly IWishlistItemRepository _wishlistItemRepository;
+        private readonly IProductRepository _productRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IUserRepository _userRepository;
 
@@ -33,7 +37,8 @@ namespace Restaurant.Persistence.Services.Commerce
             IMapper mapper,
             IUnitOfWork unitOfWork,
             ICustomerRepository customerRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IProductRepository productRepository)
         {
             _wishlistRepository = wishlistRepository;
             _wishlistItemRepository = wishlistItemRepository;
@@ -41,6 +46,7 @@ namespace Restaurant.Persistence.Services.Commerce
             _unitOfWork = unitOfWork;
             _customerRepository = customerRepository;
             _userRepository = userRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<Result<WishlistResponse>> GetByCustomerIdAsync(
@@ -49,14 +55,14 @@ namespace Restaurant.Persistence.Services.Commerce
             CancellationToken cancellationToken = default)
         {
             var customer = await _customerRepository.FindByIdAsync(query.CustomerId, cancellationToken);
-            if(customer is null)
+            if (customer is null)
             {
                 return Result<WishlistResponse>
                     .Fail(Error<Customer>.NotFound, HttpStatusCode.NotFound);
             }
 
             var wishlist = await _wishlistRepository.FindAsync(specification, cancellationToken);
-            if(wishlist is null)
+            if (wishlist is null)
             {
                 wishlist = new Wishlist(customer.Id);
                 _wishlistRepository.Add(wishlist);
@@ -94,7 +100,7 @@ namespace Restaurant.Persistence.Services.Commerce
             CancellationToken cancellationToken = default)
         {
             var user = await _userRepository.FindByIdAsync(query.UserId, cancellationToken);
-            if(user is null)
+            if (user is null)
             {
                 return Result<WishlistResponse>
                     .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
@@ -119,6 +125,41 @@ namespace Restaurant.Persistence.Services.Commerce
             var response = _mapper.Map<WishlistResponse>(wishlist);
             return Result<WishlistResponse>
                 .Succeed(response, Success<Wishlist>.Retrieved);
+        }
+
+        public async Task<Result<WishlistResponse>> AddItemAsync(
+            AddWishlistItemCommand command,
+            AddWishlistItemSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var product = await _productRepository.FindByIdAsync(command.Body.ProductId, cancellationToken);
+            if (product is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var wishlist = await _wishlistRepository.FindAsync(specification, cancellationToken);
+            if (wishlist is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<Wishlist>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            if (wishlist.WishlistItems.Any(x => x.ProductId == product.Id))
+            {
+                return Result<WishlistResponse>
+                    .Fail("This product already added into wishlist.", HttpStatusCode.Conflict);
+            }
+
+            var wishlistItem = new WishlistItem(wishlist.Id, product.Id);
+            _wishlistItemRepository.Add(wishlistItem);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var response = _mapper.Map<WishlistResponse>(wishlist);
+            return Result<WishlistResponse>
+                .Succeed(response, Success<WishlistItem>.Added);
         }
     }
 }
