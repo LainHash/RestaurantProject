@@ -1,4 +1,5 @@
 ﻿using Restaurant.Domain.Abstraction;
+using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Entities.Inventory;
 using Restaurant.Domain.Entities.Pricing;
 using Restaurant.Domain.Entities.Production;
@@ -26,6 +27,8 @@ namespace Restaurant.Domain.Entities.Catalog
         public ICollection<ProductImage> ProductImages { get; private set; } = [];
 
         public ICollection<Recipe> Recipes { get; private set; } = [];
+
+        public ICollection<WishlistItem> WishlistItems { get; private set; } = [];
     }
 
     public partial class Product

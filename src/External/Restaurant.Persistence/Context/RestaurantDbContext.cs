@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Entities.Guest;
 using Restaurant.Domain.Entities.Identity;
 using Restaurant.Domain.Entities.Inventory;
@@ -49,6 +50,9 @@ namespace Restaurant.Persistence.Context
         public DbSet<Department> Departments { get; set; } = null!;
         public DbSet<Position> Positions { get; set; } = null!;
         public DbSet<Employee> Employees { get; set; } = null!;
+
+        public DbSet<Wishlist> Wishlists { get; set; } = null!;
+        public DbSet<WishlistItem> WishlistItems { get; set; } = null!;
 
         // ── Model building ──────────────────────────────────────────────────
         protected override void OnModelCreating(ModelBuilder modelBuilder)
