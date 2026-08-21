@@ -20,5 +20,10 @@ namespace Restaurant.Domain.Entities.Commerce
         {
             CustomerId = customerId;
         }
+
+        public Wishlist(string sessionId)
+        {
+            SessionId = sessionId;
+        }
     }
 }

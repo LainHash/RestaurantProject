@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
+using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetBySessionId;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Commerce;
 using Restaurant.Contract.DTOs.Commerce.Wishlists;
@@ -52,6 +53,25 @@ namespace Restaurant.Persistence.Services.Commerce
             if(wishlist is null)
             {
                 wishlist = new Wishlist(customer.Id);
+                _wishlistRepository.Add(wishlist);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
+
+            var response = _mapper.Map<WishlistResponse>(wishlist);
+            return Result<WishlistResponse>
+                .Succeed(response, Success<Wishlist>.Retrieved);
+        }
+
+        public async Task<Result<WishlistResponse>> GetBySessionIdAsync(
+            GetWishlistBySessionIdQuery query,
+            GetWishlistBySessionIdSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var wishlist = await _wishlistRepository.FindAsync(specification, cancellationToken);
+            if (wishlist is null)
+            {
+                wishlist = new Wishlist(query.SessionId);
                 _wishlistRepository.Add(wishlist);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
