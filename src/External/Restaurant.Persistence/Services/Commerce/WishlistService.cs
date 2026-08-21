@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem;
+using Restaurant.Application.Features.Commerce.Wishlists.Commands.RemoveItem;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetBySessionId;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByUserId;
@@ -17,7 +18,6 @@ using Restaurant.Domain.Repositories.Commerce;
 using Restaurant.Domain.Repositories.Guest;
 using Restaurant.Domain.Repositories.Identity;
 using System.Net;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.Persistence.Services.Commerce
 {
@@ -133,13 +133,6 @@ namespace Restaurant.Persistence.Services.Commerce
             AddWishlistItemSpecification specification,
             CancellationToken cancellationToken = default)
         {
-            var product = await _productRepository.FindByIdAsync(command.Body.ProductId, cancellationToken);
-            if (product is null)
-            {
-                return Result<WishlistResponse>
-                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
-            }
-
             var user = await _userRepository.FindByIdAsync(command.UserId, cancellationToken);
             if (user is null)
             {
@@ -154,6 +147,13 @@ namespace Restaurant.Persistence.Services.Commerce
                     .Fail(Error<Customer>.NotFound, HttpStatusCode.NotFound);
             }
 
+            var product = await _productRepository.FindByIdAsync(command.Body.ProductId, cancellationToken);
+            if (product is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
+            }
+
             var wishlist = await _wishlistRepository.FindAsync(specification, cancellationToken);
             if (wishlist is null)
             {
@@ -163,14 +163,60 @@ namespace Restaurant.Persistence.Services.Commerce
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
             }
 
-            if (wishlist.WishlistItems.Any(x => x.ProductId == product.Id))
+            if (!wishlist.WishlistItems.Any(x => x.ProductId == product.Id))
             {
-                return Result<WishlistResponse>
-                    .Fail("This product already added into wishlist.", HttpStatusCode.Conflict);
+                var wishlistItem = new WishlistItem(wishlist.Id, product.Id);
+                _wishlistItemRepository.Add(wishlistItem);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
             }
 
-            var wishlistItem = new WishlistItem(wishlist.Id, product.Id);
-            _wishlistItemRepository.Add(wishlistItem);
+            var response = _mapper.Map<WishlistResponse>(wishlist);
+            return Result<WishlistResponse>
+                .Succeed(response, Success<WishlistItem>.Added);
+        }
+
+        public async Task<Result<WishlistResponse>> RemoveItemAsync(
+            RemoveWishlistItemCommand command,
+            RemoveWishlistItemSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.FindByIdAsync(command.UserId, cancellationToken);
+            if (user is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var customer = await _customerRepository.FindByUserIdAsync(user.Id, cancellationToken);
+            if (customer is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<Customer>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var product = await _productRepository.FindByIdAsync(command.Body.ProductId, cancellationToken);
+            if (product is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var wishlist = await _wishlistRepository.FindAsync(specification, cancellationToken);
+            if (wishlist is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<Wishlist>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var wishlistItem = wishlist.WishlistItems.FirstOrDefault(x => x.ProductId == product.Id);
+            if (wishlistItem is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail("This product has not been added to your wishlist.", HttpStatusCode.NotFound);
+            }
+
+            _wishlistItemRepository.Remove(wishlistItem);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
