@@ -11,16 +11,5 @@ namespace Restaurant.API.Controllers.Commerce
     public class WishlistsController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
-
-        [HttpPost("wishlist/{id}")]
-        public async Task<IActionResult> AddItem(
-            [FromRoute] string id,
-            [FromBody] AddWishlistItemRequest body,
-            CancellationToken cancellationToken)
-        {
-            var command = new AddWishlistItemCommand(id, body);
-            var result = await _mediator.Send(command, cancellationToken);
-            return this.ToActionResult(result);
-        }
     }
 }

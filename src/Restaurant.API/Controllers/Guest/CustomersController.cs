@@ -81,5 +81,23 @@ namespace Restaurant.API.Controllers.Guest
             var result = await _mediator.Send(query, cancellationToken);
             return this.ToActionResult(result);
         }
+
+
+        [HttpPost("user/wishlist/items")]
+        public async Task<IActionResult> AddItem(
+            [FromBody] AddWishlistItemRequest body,
+            CancellationToken cancellationToken)
+        {
+            string userId = null!;
+
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            }
+
+            var command = new AddWishlistItemCommand(userId, body);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
     }
 }

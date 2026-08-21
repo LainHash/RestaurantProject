@@ -17,6 +17,7 @@ using Restaurant.Domain.Repositories.Commerce;
 using Restaurant.Domain.Repositories.Guest;
 using Restaurant.Domain.Repositories.Identity;
 using System.Net;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.Persistence.Services.Commerce
 {
@@ -139,11 +140,27 @@ namespace Restaurant.Persistence.Services.Commerce
                     .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
             }
 
+            var user = await _userRepository.FindByIdAsync(command.UserId, cancellationToken);
+            if (user is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var customer = await _customerRepository.FindByUserIdAsync(user.Id, cancellationToken);
+            if (customer is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<Customer>.NotFound, HttpStatusCode.NotFound);
+            }
+
             var wishlist = await _wishlistRepository.FindAsync(specification, cancellationToken);
             if (wishlist is null)
             {
-                return Result<WishlistResponse>
-                    .Fail(Error<Wishlist>.NotFound, HttpStatusCode.NotFound);
+                wishlist = new Wishlist(customer.Id);
+                _wishlistRepository.Add(wishlist);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
             }
 
             if (wishlist.WishlistItems.Any(x => x.ProductId == product.Id))

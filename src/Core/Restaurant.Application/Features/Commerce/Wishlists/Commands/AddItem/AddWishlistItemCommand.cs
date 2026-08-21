@@ -5,7 +5,7 @@ using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem
 {
-    public record AddWishlistItemCommand(string WishlistId, AddWishlistItemRequest Body)
+    public record AddWishlistItemCommand(string UserId, AddWishlistItemRequest Body)
         : IRequest<Result<WishlistResponse>>
     {
     }
