@@ -11,6 +11,5 @@ namespace Restaurant.Contract.DTOs.Guest.Customers
 
         public AccountResponse Account { get; set; } = null!;
         public PersonalProfileResponse PersonalProfile { get; set; } = null!;
-        public WalletResponse Wallet { get; set; } = null!;
     }
 }

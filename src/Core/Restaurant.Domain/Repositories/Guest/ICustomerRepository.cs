@@ -5,5 +5,8 @@ namespace Restaurant.Domain.Repositories.Guest
     public interface ICustomerRepository : IRepository<Customer>
     {
         Task<Customer?> FindByUserAsync(int userId, CancellationToken cancellationToken = default);
+
+        Task<Customer?> FindByIdAsync(int id, CancellationToken cancellationToken = default);
+        Task<Customer?> FindByIdAsync(string id, CancellationToken cancellationToken = default);
     }
 }

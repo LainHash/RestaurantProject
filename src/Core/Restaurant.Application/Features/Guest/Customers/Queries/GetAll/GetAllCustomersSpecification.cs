@@ -13,7 +13,6 @@ namespace Restaurant.Application.Features.Guest.Customers.Queries.GetAll
                                         .ThenInclude(u => u.Role));
             AddIncludeAggregator(x => x.Include(c => c.User)
                                         .ThenInclude(u => u.PersonalProfile));
-            AddInclude(x => x.Wallet!);
         }
     }
 }

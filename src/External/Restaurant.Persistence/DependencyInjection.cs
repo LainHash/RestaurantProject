@@ -26,6 +26,8 @@ using Restaurant.Persistence.Services.Production;
 using Restaurant.Persistence.Services.Storage;
 using Restaurant.Persistence.Services.Personnel;
 using Restaurant.Persistence.Services.Territory;
+using Restaurant.Application.Services.Commerce;
+using Restaurant.Persistence.Services.Commerce;
 
 namespace Restaurant.Persistence
 {
@@ -112,6 +114,8 @@ namespace Restaurant.Persistence
             services.AddScoped<IWalletService, WalletService>();
 
             services.AddScoped<IDepartmentService, DepartmentService>();
+
+            services.AddScoped<IWishlistService, WishlistService>();
 
             return services;
         }
