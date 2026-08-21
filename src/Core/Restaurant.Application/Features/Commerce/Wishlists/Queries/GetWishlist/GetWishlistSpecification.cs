@@ -2,28 +2,28 @@ using Microsoft.EntityFrameworkCore;
 using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Specifications;
 
-namespace Restaurant.Application.Features.Commerce.Wishlists.Commands.RemoveItem
+namespace Restaurant.Application.Features.Commerce.Wishlists.Queries.GetWishlist
 {
-    public class RemoveWishlistItemSpecification
+    public class GetWishlistSpecification
         : BaseSpecification<Wishlist>
     {
-        public RemoveWishlistItemSpecification(RemoveWishlistItemCommand command)
+        public GetWishlistSpecification(GetWishlistQuery query)
         {
-            if (command.CustomerId != null)
+            if (query.CustomerId != null)
             {
                 AddIncludeAggregator(x => x.Include(w => w.Customer!)
                                             .ThenInclude(c => c!.User));
                 AddIncludeAggregator(x => x.Include(w => w.WishlistItems)
                                             .ThenInclude(wi => wi.Product));
 
-                AddCriteria(x => x.Customer!.PublicId == command.CustomerId);
+                AddCriteria(x => x.Customer!.PublicId == query.CustomerId);
             }
             else
             {
                 AddIncludeAggregator(x => x.Include(w => w.WishlistItems)
                                             .ThenInclude(wi => wi.Product));
 
-                AddCriteria(x => x.SessionId == command.SessionId);
+                AddCriteria(x => x.SessionId == query.SessionId);
             }
         }
     }

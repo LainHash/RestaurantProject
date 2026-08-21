@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Specifications;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem
 {
@@ -10,13 +9,22 @@ namespace Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem
     {
         public AddWishlistItemSpecification(AddWishlistItemCommand command)
         {
-            AddIncludeAggregator(x => x.Include(w => w.Customer)
-                                        .ThenInclude(c => c!.User));
-            AddIncludeAggregator(x => x.Include(w => w.WishlistItems)
-                                        .ThenInclude(wi => wi.Product));
+            if (command.CustomerId != null)
+            {
+                AddIncludeAggregator(x => x.Include(w => w.Customer!)
+                                            .ThenInclude(c => c!.User));
+                AddIncludeAggregator(x => x.Include(w => w.WishlistItems)
+                                            .ThenInclude(wi => wi.Product));
 
+                AddCriteria(x => x.Customer!.PublicId == command.CustomerId);
+            }
+            else
+            {
+                AddIncludeAggregator(x => x.Include(w => w.WishlistItems)
+                                            .ThenInclude(wi => wi.Product));
 
-            AddCriteria(x => x.Customer!.User.PublicId == command.UserId);
+                AddCriteria(x => x.SessionId == command.SessionId);
+            }
         }
     }
 }

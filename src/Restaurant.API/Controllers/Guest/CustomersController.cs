@@ -1,17 +1,11 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
-using Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem;
-using Restaurant.Application.Features.Commerce.Wishlists.Commands.RemoveItem;
-using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
-using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByUserId;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetAll;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetById;
 using Restaurant.Application.Features.Guest.Customers.Queries.GetByUserId;
-using Restaurant.Contract.DTOs.Commerce.WishlistItems;
 using System.Security.Claims;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.API.Controllers.Guest
 {
@@ -55,66 +49,6 @@ namespace Restaurant.API.Controllers.Guest
 
             var query = new GetCustomerByUserIdQuery(userId);
             var result = await _mediator.Send(query, cancellationToken);
-            return this.ToActionResult(result);
-        }
-
-        [HttpGet("{id}/wishlist")]
-        public async Task<IActionResult> GetWishlist(
-            [FromRoute] string id,
-            CancellationToken cancellationToken)
-        {
-            var query = new GetWishlistByCustomerIdQuery(id);
-            var result = await _mediator.Send(query, cancellationToken);
-            return this.ToActionResult(result);
-        }
-
-        [HttpGet("user/wishlist")]
-        public async Task<IActionResult> GetWishlist(CancellationToken cancellationToken)
-        {
-            string userId = null!;
-
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            }
-
-            var query = new GetWishlistByUserIdQuery(userId);
-            var result = await _mediator.Send(query, cancellationToken);
-            return this.ToActionResult(result);
-        }
-
-
-        [HttpPost("user/wishlist/items")]
-        public async Task<IActionResult> AddItem(
-            [FromBody] AddWishlistItemRequest body,
-            CancellationToken cancellationToken)
-        {
-            string userId = null!;
-
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            }
-
-            var command = new AddWishlistItemCommand(userId, body);
-            var result = await _mediator.Send(command, cancellationToken);
-            return this.ToActionResult(result);
-        }
-
-        [HttpDelete("user/wishlist/items")]
-        public async Task<IActionResult> RemoveItem(
-            [FromBody] RemoveWishlistItemRequest body,
-            CancellationToken cancellationToken)
-        {
-            string userId = null!;
-
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            }
-
-            var command = new RemoveWishlistItemCommand(userId, body);
-            var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
         }
     }

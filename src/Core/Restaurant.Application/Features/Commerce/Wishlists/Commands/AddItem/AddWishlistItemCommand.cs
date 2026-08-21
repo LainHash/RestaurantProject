@@ -1,11 +1,11 @@
-﻿using MediatR;
+using MediatR;
 using Restaurant.Contract.DTOs.Commerce.WishlistItems;
 using Restaurant.Contract.DTOs.Commerce.Wishlists;
 using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem
 {
-    public record AddWishlistItemCommand(string UserId, AddWishlistItemRequest Body)
+    public record AddWishlistItemCommand(string? CustomerId, string? SessionId, AddWishlistItemRequest Body)
         : IRequest<Result<WishlistResponse>>
     {
     }
