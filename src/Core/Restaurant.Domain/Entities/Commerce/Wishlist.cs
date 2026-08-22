@@ -25,5 +25,16 @@ namespace Restaurant.Domain.Entities.Commerce
         {
             SessionId = sessionId;
         }
+
+        public void Merge(Wishlist wishlist)
+        {
+            foreach (var sourceItem in wishlist.WishlistItems)
+            {
+                if (WishlistItems.Any(x => x.ProductId == sourceItem.ProductId))
+                    continue;
+
+                WishlistItems.Add(new WishlistItem(this.Id, sourceItem.ProductId));
+            }
+        }
     }
 }

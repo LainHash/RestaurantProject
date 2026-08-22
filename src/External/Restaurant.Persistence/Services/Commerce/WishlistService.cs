@@ -1,5 +1,6 @@
 using AutoMapper;
 using Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem;
+using Restaurant.Application.Features.Commerce.Wishlists.Commands.Merge;
 using Restaurant.Application.Features.Commerce.Wishlists.Commands.RemoveItem;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetBySessionId;
@@ -18,7 +19,6 @@ using Restaurant.Domain.Repositories.Commerce;
 using Restaurant.Domain.Repositories.Guest;
 using Restaurant.Domain.Repositories.Identity;
 using System.Net;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.Persistence.Services.Commerce
 {
@@ -106,7 +106,7 @@ namespace Restaurant.Persistence.Services.Commerce
             if (query.UserId != null)
             {
                 var user = await _userRepository.FindByIdAsync(query.UserId, cancellationToken);
-                if(user is null)
+                if (user is null)
                 {
                     return Result<WishlistResponse>
                         .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
@@ -270,6 +270,69 @@ namespace Restaurant.Persistence.Services.Commerce
             var response = _mapper.Map<WishlistResponse>(wishlist);
             return Result<WishlistResponse>
                 .Succeed(response, Success<WishlistItem>.Deleted);
+        }
+
+        public async Task<Result<WishlistResponse>> MergeAsync(
+            MergeWishlistCommand command,
+            MergeWishlistSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            Wishlist? wishlist;
+
+            var user = await _userRepository.FindByIdAsync(command.UserId, cancellationToken);
+            if (user is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var customer = await _customerRepository.FindByUserIdAsync(user.Id, cancellationToken);
+            if (customer is null)
+            {
+                return Result<WishlistResponse>
+                    .Fail(Error<Customer>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var guestWishlist = await _wishlistRepository
+                .FindBySessionIdAsync(command.SessionId, cancellationToken);
+
+            var customerWishlist = await _wishlistRepository
+                .FindByCustomerIdAsync(customer.Id, cancellationToken);
+
+            if (customerWishlist is null)
+            {
+                if (guestWishlist is null)
+                {
+                    wishlist = new Wishlist(customer.Id);
+                    _wishlistRepository.Add(wishlist);
+                }
+                else
+                {
+                    wishlist = new Wishlist(customer.Id);
+                    wishlist.Merge(guestWishlist);
+
+                    //_wishlistRepository.Remove(guestWishlist);
+                    _wishlistRepository.Add(wishlist);
+                }
+            }
+            else
+            {
+                wishlist = customerWishlist;
+
+                if (guestWishlist is not null)
+                {
+                    wishlist.Merge(guestWishlist);
+
+                    //_wishlistRepository.Remove(guestWishlist);
+                }
+            }
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var processedWishlist = await _wishlistRepository.FindAsync(specification, cancellationToken); 
+            var response = _mapper.Map<WishlistResponse>(processedWishlist);
+            return Result<WishlistResponse>
+                .Succeed(response, "Wishlist merged successfully.");
         }
     }
 }

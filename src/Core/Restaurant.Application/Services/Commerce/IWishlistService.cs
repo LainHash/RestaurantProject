@@ -1,4 +1,5 @@
 using Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem;
+using Restaurant.Application.Features.Commerce.Wishlists.Commands.Merge;
 using Restaurant.Application.Features.Commerce.Wishlists.Commands.RemoveItem;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetByCustomerId;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetBySessionId;
@@ -33,6 +34,11 @@ namespace Restaurant.Application.Services.Commerce
         Task<Result<WishlistResponse>> RemoveItemAsync(
             RemoveWishlistItemCommand command,
             RemoveWishlistItemSpecification specification,
+            CancellationToken cancellationToken = default);
+
+        Task<Result<WishlistResponse>> MergeAsync(
+            MergeWishlistCommand command,
+            MergeWishlistSpecification specification,
             CancellationToken cancellationToken = default);
     }
 }

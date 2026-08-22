@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem;
+using Restaurant.Application.Features.Commerce.Wishlists.Commands.Merge;
 using Restaurant.Application.Features.Commerce.Wishlists.Commands.RemoveItem;
 using Restaurant.Application.Features.Commerce.Wishlists.Queries.GetWishlist;
 using Restaurant.Contract.DTOs.Commerce.WishlistItems;
@@ -49,20 +50,25 @@ namespace Restaurant.API.Controllers.Commerce
             return this.ToActionResult(result);
         }
 
+        [HttpPost("items/merge")]
+        public async Task<IActionResult> Merge(CancellationToken cancellationToken)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var sessionId = Request.Headers["X-Session-Id"].FirstOrDefault();
+
+            var command = new MergeWishlistCommand(userId!, sessionId!);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
         private (string? UserId, string? SessionId) GetWishlistOwner()
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                return (
-                    User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                    null
-                );
+                return (User.FindFirst(ClaimTypes.NameIdentifier)?.Value, null);
             }
 
-            return (
-                null,
-                Request.Headers["X-Session-Id"].FirstOrDefault()
-            );
+            return (null, Request.Headers["X-Session-Id"].FirstOrDefault());
         }
     }
 }
