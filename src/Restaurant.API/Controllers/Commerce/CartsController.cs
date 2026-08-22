@@ -18,17 +18,7 @@ namespace Restaurant.API.Controllers.Commerce
         [HttpGet]
         public async Task<IActionResult> GetCart(CancellationToken cancellationToken)
         {
-            string? userId = null;
-            string? sessionId = null;
-
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            }
-            else
-            {
-                sessionId = Request.Headers["X-Session-Id"].FirstOrDefault();
-            }
+            var (userId, sessionId) = GetCartOwner();
 
             var query = new GetCartQuery(userId, sessionId);
             var result = await _mediator.Send(query, cancellationToken);
@@ -40,17 +30,7 @@ namespace Restaurant.API.Controllers.Commerce
             [FromBody] AddCartItemRequest body,
             CancellationToken cancellationToken)
         {
-            string? userId = null;
-            string? sessionId = null;
-
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            }
-            else
-            {
-                sessionId = Request.Headers["X-Session-Id"].FirstOrDefault();
-            }
+            var (userId, sessionId) = GetCartOwner();
 
             var command = new AddCartItemCommand(userId, sessionId, body);
             var result = await _mediator.Send(command, cancellationToken);
@@ -62,21 +42,27 @@ namespace Restaurant.API.Controllers.Commerce
             [FromBody] RemoveCartItemRequest body,
             CancellationToken cancellationToken)
         {
-            string? userId = null;
-            string? sessionId = null;
-
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            }
-            else
-            {
-                sessionId = Request.Headers["X-Session-Id"].FirstOrDefault();
-            }
+            var (userId, sessionId) = GetCartOwner();
 
             var command = new RemoveCartItemCommand(userId, sessionId, body);
             var result = await _mediator.Send(command, cancellationToken);
             return this.ToActionResult(result);
+        }
+
+        private (string? UserId, string? SessionId) GetCartOwner()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return (
+                    User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                    null
+                );
+            }
+
+            return (
+                null,
+                Request.Headers["X-Session-Id"].FirstOrDefault()
+            );
         }
     }
 }
