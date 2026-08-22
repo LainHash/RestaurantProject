@@ -10,12 +10,15 @@ using Restaurant.Contract.DTOs.Commerce.Wishlists;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Entities.Guest;
+using Restaurant.Domain.Entities.Identity;
 using Restaurant.Domain.Models.Messages;
 using Restaurant.Domain.Models.Results;
 using Restaurant.Domain.Repositories.Catalog;
 using Restaurant.Domain.Repositories.Commerce;
 using Restaurant.Domain.Repositories.Guest;
+using Restaurant.Domain.Repositories.Identity;
 using System.Net;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.Persistence.Services.Commerce
 {
@@ -25,6 +28,7 @@ namespace Restaurant.Persistence.Services.Commerce
         private readonly IWishlistItemRepository _wishlistItemRepository;
         private readonly IProductRepository _productRepository;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IUserRepository _userRepository;
 
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -35,7 +39,8 @@ namespace Restaurant.Persistence.Services.Commerce
             IMapper mapper,
             IUnitOfWork unitOfWork,
             ICustomerRepository customerRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+            IUserRepository userRepository)
         {
             _wishlistRepository = wishlistRepository;
             _wishlistItemRepository = wishlistItemRepository;
@@ -43,6 +48,7 @@ namespace Restaurant.Persistence.Services.Commerce
             _unitOfWork = unitOfWork;
             _customerRepository = customerRepository;
             _productRepository = productRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<Result<WishlistResponse>> GetByCustomerIdAsync(
@@ -97,9 +103,16 @@ namespace Restaurant.Persistence.Services.Commerce
         {
             Wishlist? wishlist;
 
-            if (query.CustomerId != null)
+            if (query.UserId != null)
             {
-                var customer = await _customerRepository.FindByIdAsync(query.CustomerId, cancellationToken);
+                var user = await _userRepository.FindByIdAsync(query.UserId, cancellationToken);
+                if(user is null)
+                {
+                    return Result<WishlistResponse>
+                        .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+                }
+
+                var customer = await _customerRepository.FindByUserIdAsync(user.Id, cancellationToken);
                 if (customer is null)
                 {
                     return Result<WishlistResponse>
@@ -146,9 +159,16 @@ namespace Restaurant.Persistence.Services.Commerce
 
             Wishlist? wishlist;
 
-            if (command.CustomerId != null)
+            if (command.UserId != null)
             {
-                var customer = await _customerRepository.FindByIdAsync(command.CustomerId, cancellationToken);
+                var user = await _userRepository.FindByIdAsync(command.UserId, cancellationToken);
+                if (user is null)
+                {
+                    return Result<WishlistResponse>
+                        .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+                }
+
+                var customer = await _customerRepository.FindByUserIdAsync(user.Id, cancellationToken);
                 if (customer is null)
                 {
                     return Result<WishlistResponse>
@@ -203,9 +223,16 @@ namespace Restaurant.Persistence.Services.Commerce
 
             Wishlist? wishlist;
 
-            if (command.CustomerId != null)
+            if (command.UserId != null)
             {
-                var customer = await _customerRepository.FindByIdAsync(command.CustomerId, cancellationToken);
+                var user = await _userRepository.FindByIdAsync(command.UserId, cancellationToken);
+                if (user is null)
+                {
+                    return Result<WishlistResponse>
+                        .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+                }
+
+                var customer = await _customerRepository.FindByUserIdAsync(user.Id, cancellationToken);
                 if (customer is null)
                 {
                     return Result<WishlistResponse>

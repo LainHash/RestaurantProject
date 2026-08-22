@@ -4,7 +4,7 @@ using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Features.Commerce.Wishlists.Queries.GetWishlist
 {
-    public record GetWishlistQuery(string? CustomerId, string? SessionId)
+    public record GetWishlistQuery(string? UserId, string? SessionId)
         : IRequest<Result<WishlistResponse>>
     {
     }

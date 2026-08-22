@@ -5,7 +5,7 @@ using Restaurant.Domain.Models.Results;
 
 namespace Restaurant.Application.Features.Commerce.Wishlists.Commands.RemoveItem
 {
-    public record RemoveWishlistItemCommand(string? CustomerId, string? SessionId, RemoveWishlistItemRequest Body)
+    public record RemoveWishlistItemCommand(string? UserId, string? SessionId, RemoveWishlistItemRequest Body)
         : IRequest<Result<WishlistResponse>>
     {
     }

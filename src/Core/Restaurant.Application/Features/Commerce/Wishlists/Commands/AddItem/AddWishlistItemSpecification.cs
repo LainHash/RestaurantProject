@@ -9,14 +9,14 @@ namespace Restaurant.Application.Features.Commerce.Wishlists.Commands.AddItem
     {
         public AddWishlistItemSpecification(AddWishlistItemCommand command)
         {
-            if (command.CustomerId != null)
+            if (command.UserId != null)
             {
                 AddIncludeAggregator(x => x.Include(w => w.Customer!)
                                             .ThenInclude(c => c!.User));
                 AddIncludeAggregator(x => x.Include(w => w.WishlistItems)
                                             .ThenInclude(wi => wi.Product));
 
-                AddCriteria(x => x.Customer!.PublicId == command.CustomerId);
+                AddCriteria(x => x.Customer!.User.PublicId == command.UserId);
             }
             else
             {
