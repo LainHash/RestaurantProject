@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.API.Extensions;
 using Restaurant.Application.Features.Commerce.Carts.Commands.AddItem;
+using Restaurant.Application.Features.Commerce.Carts.Commands.Merge;
 using Restaurant.Application.Features.Commerce.Carts.Commands.RemoveItem;
 using Restaurant.Application.Features.Commerce.Carts.Queries.GetCart;
 using Restaurant.Contract.DTOs.Commerce.CartItems;
@@ -49,20 +50,25 @@ namespace Restaurant.API.Controllers.Commerce
             return this.ToActionResult(result);
         }
 
+        [HttpPost("items/merge")]
+        public async Task<IActionResult> Merge(CancellationToken cancellationToken)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var sessionId = Request.Headers["X-Session-Id"].FirstOrDefault();
+
+            var command = new MergeCartCommand(userId!, sessionId!);
+            var result = await _mediator.Send(command, cancellationToken);
+            return this.ToActionResult(result);
+        }
+
         private (string? UserId, string? SessionId) GetCartOwner()
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                return (
-                    User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                    null
-                );
+                return (User.FindFirst(ClaimTypes.NameIdentifier)?.Value, null);
             }
 
-            return (
-                null,
-                Request.Headers["X-Session-Id"].FirstOrDefault()
-            );
+            return (null, Request.Headers["X-Session-Id"].FirstOrDefault());
         }
     }
 }

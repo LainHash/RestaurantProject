@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Commerce.Carts.Commands.AddItem;
+using Restaurant.Application.Features.Commerce.Carts.Commands.Merge;
 using Restaurant.Application.Features.Commerce.Carts.Commands.RemoveItem;
 using Restaurant.Application.Features.Commerce.Carts.Queries.GetCart;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Commerce;
 using Restaurant.Contract.DTOs.Commerce.Carts;
+using Restaurant.Contract.DTOs.Commerce.Wishlists;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Entities.Guest;
@@ -227,6 +229,68 @@ namespace Restaurant.Persistence.Services.Commerce
             var response = _mapper.Map<CartResponse>(cart);
             return Result<CartResponse>
                 .Succeed(response, Success<CartItem>.Deleted);
+        }
+
+        public async Task<Result<CartResponse>> MergeAsync(
+            MergeCartCommand command,
+            MergeCartSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            Cart? cart;
+
+            var user = await _userRepository.FindByIdAsync(command.UserId, cancellationToken);
+            if (user is null)
+            {
+                return Result<CartResponse>
+                    .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var customer = await _customerRepository.FindByUserIdAsync(user.Id, cancellationToken);
+            if (customer is null)
+            {
+                return Result<CartResponse>
+                    .Fail(Error<Customer>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            var guestCart = await _cartRepository
+                .FindBySessionIdAsync(command.SessionId, cancellationToken);
+
+            var customerCart = await _cartRepository
+                .FindByCustomerIdAsync(customer.Id, cancellationToken);
+
+            if (customerCart is null)
+            {
+                if (guestCart is null)
+                {
+                    cart = new Cart(customer.Id);
+                    _cartRepository.Add(cart);
+                }
+                else
+                {
+                    cart = new Cart(customer.Id);
+                    cart.Merge(guestCart);
+
+                    //_cartRepository.Remove(guestCart);
+                    _cartRepository.Add(cart);
+                }
+            }
+            else
+            {
+                cart = customerCart;
+
+                if (guestCart is not null)
+                {
+                    cart.Merge(guestCart);
+                    //_cartRepository.Remove(guestCart);
+                }
+            }
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var processedCart = await _cartRepository.FindAsync(specification, cancellationToken);
+            var response = _mapper.Map<CartResponse>(processedCart);
+            return Result<CartResponse>
+                .Succeed(response, "Wishlist merged successfully.");
         }
     }
 }

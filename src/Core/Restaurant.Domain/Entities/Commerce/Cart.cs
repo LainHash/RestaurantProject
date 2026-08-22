@@ -25,5 +25,19 @@ namespace Restaurant.Domain.Entities.Commerce
         {
             SessionId = sessionId;
         }
+
+        public void Merge(Cart source)
+        {
+            foreach (var sourceItem in source.CartItems)
+            {
+                var existingCartItem = CartItems.FirstOrDefault(x => x.ProductId == sourceItem.ProductId);
+                if (existingCartItem is not null)
+                {
+                    existingCartItem.UpdateQuantity(sourceItem.Quantity);
+                }
+
+                CartItems.Add(new CartItem(this.Id, sourceItem.ProductId));
+            }
+        }
     }
 }

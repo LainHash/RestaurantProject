@@ -1,4 +1,5 @@
 ﻿using Restaurant.Application.Features.Commerce.Carts.Commands.AddItem;
+using Restaurant.Application.Features.Commerce.Carts.Commands.Merge;
 using Restaurant.Application.Features.Commerce.Carts.Commands.RemoveItem;
 using Restaurant.Application.Features.Commerce.Carts.Queries.GetCart;
 using Restaurant.Contract.DTOs.Commerce.Carts;
@@ -21,6 +22,11 @@ namespace Restaurant.Application.Services.Commerce
         Task<Result<CartResponse>> RemoveItemAsync(
             RemoveCartItemCommand command,
             RemoveCartItemSpecification specification,
+            CancellationToken cancellationToken = default);
+
+        Task<Result<CartResponse>> MergeAsync(
+            MergeCartCommand command,
+            MergeCartSpecification specification,
             CancellationToken cancellationToken = default);
     }
 }
