@@ -116,6 +116,7 @@ namespace Restaurant.Persistence
             services.AddScoped<IDepartmentService, DepartmentService>();
 
             services.AddScoped<IWishlistService, WishlistService>();
+            services.AddScoped<ICartService, CartService>();
 
             return services;
         }
