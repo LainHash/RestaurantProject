@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Restaurant.Domain.Abstraction;
 using Restaurant.Domain.Entities.Catalog;
+using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Entities.Guest;
 using Restaurant.Domain.Entities.Identity;
 using Restaurant.Domain.Entities.Inventory;
+using Restaurant.Domain.Entities.Personnel;
 using Restaurant.Domain.Entities.Pricing;
 using Restaurant.Domain.Entities.Production;
 using Restaurant.Domain.Entities.Storage;
@@ -45,12 +47,25 @@ namespace Restaurant.Persistence.Context
 
         public DbSet<Wallet> Wallets { get; set; } = null!;
 
+        public DbSet<Department> Departments { get; set; } = null!;
+        public DbSet<Position> Positions { get; set; } = null!;
+        public DbSet<Employee> Employees { get; set; } = null!;
+
+        public DbSet<Wishlist> Wishlists { get; set; } = null!;
+        public DbSet<WishlistItem> WishlistItems { get; set; } = null!;
+        public DbSet<Cart> Carts { get; set; } = null!;
+        public DbSet<CartItem> CartItems { get; set; } = null!;
+
         // ── Model building ──────────────────────────────────────────────────
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.HasSequence<long>("CustomerCodeSequence")
+                .StartsAt(1)
+                .IncrementsBy(1);
+
+            modelBuilder.HasSequence<long>("EmployeeCodeSequence")
                 .StartsAt(1)
                 .IncrementsBy(1);
 

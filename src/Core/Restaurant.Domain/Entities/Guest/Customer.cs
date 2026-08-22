@@ -1,4 +1,5 @@
 ﻿using Restaurant.Domain.Abstraction;
+using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Entities.Identity;
 using Restaurant.Domain.Entities.Storage;
 
@@ -20,6 +21,8 @@ namespace Restaurant.Domain.Entities.Guest
         public User User { get; private set; } = null!;
 
         public Wallet? Wallet { get; private set; }
+        public Wishlist? Wishlist { get; private set; } = null!;
+        public Cart? Cart { get; private set; } = null!;
     }
 
     public partial class Customer

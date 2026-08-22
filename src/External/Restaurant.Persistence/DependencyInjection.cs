@@ -9,6 +9,7 @@ using Restaurant.Application.Services.Identity;
 using Restaurant.Application.Services.Inventory;
 using Restaurant.Application.Services.Production;
 using Restaurant.Application.Services.Storage;
+using Restaurant.Application.Services.Personnel;
 using Restaurant.Application.Services.Territory;
 using Restaurant.Domain.Repositories;
 using Restaurant.Persistence.Context;
@@ -23,7 +24,10 @@ using Restaurant.Persistence.Services.Identity;
 using Restaurant.Persistence.Services.Inventory;
 using Restaurant.Persistence.Services.Production;
 using Restaurant.Persistence.Services.Storage;
+using Restaurant.Persistence.Services.Personnel;
 using Restaurant.Persistence.Services.Territory;
+using Restaurant.Application.Services.Commerce;
+using Restaurant.Persistence.Services.Commerce;
 
 namespace Restaurant.Persistence
 {
@@ -108,6 +112,11 @@ namespace Restaurant.Persistence
             services.AddScoped<ICustomerService, CustomerService>();
 
             services.AddScoped<IWalletService, WalletService>();
+
+            services.AddScoped<IDepartmentService, DepartmentService>();
+
+            services.AddScoped<IWishlistService, WishlistService>();
+            services.AddScoped<ICartService, CartService>();
 
             return services;
         }

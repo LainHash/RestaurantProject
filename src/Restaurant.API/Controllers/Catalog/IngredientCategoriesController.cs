@@ -19,7 +19,7 @@ namespace Restaurant.API.Controllers.Catalog
     {
         private readonly IMediator _mediator = mediator;
 
-        [Authorize(Roles = "SuperAdmin,Admin,Manager,Chef,InventoryManager")]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] GetAllIngredientCategoriesQuery query,
@@ -29,7 +29,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
-        [Authorize(Roles = "SuperAdmin,Admin,Manager,Chef,InventoryManager")]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(
             [FromRoute] string id,
@@ -40,7 +40,7 @@ namespace Restaurant.API.Controllers.Catalog
             return this.ToActionResult(result);
         }
 
-        [Authorize(Roles = "SuperAdmin,Admin,Manager,Chef,InventoryManager")]
+        [AllowAnonymous]
         [HttpGet("by-name/{name}")]
         public async Task<IActionResult> GetByName(
             [FromRoute] string name,
