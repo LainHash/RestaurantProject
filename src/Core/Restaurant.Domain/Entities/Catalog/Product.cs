@@ -29,6 +29,7 @@ namespace Restaurant.Domain.Entities.Catalog
         public ICollection<Recipe> Recipes { get; private set; } = [];
 
         public ICollection<WishlistItem> WishlistItems { get; private set; } = [];
+        public ICollection<CartItem> CartItems { get; private set; } = [];
     }
 
     public partial class Product

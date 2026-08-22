@@ -22,6 +22,7 @@ namespace Restaurant.Domain.Entities.Guest
 
         public Wallet? Wallet { get; private set; }
         public Wishlist? Wishlist { get; private set; } = null!;
+        public Cart? Cart { get; private set; } = null!;
     }
 
     public partial class Customer
