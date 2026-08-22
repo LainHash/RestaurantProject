@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Restaurant.Application.Features.Commerce.Carts.Commands.AddItem;
+using Restaurant.Application.Features.Commerce.Carts.Commands.RemoveItem;
 using Restaurant.Application.Features.Commerce.Carts.Queries.GetCart;
 using Restaurant.Application.Services.Business;
 using Restaurant.Application.Services.Commerce;
 using Restaurant.Contract.DTOs.Commerce.Carts;
-using Restaurant.Contract.DTOs.Commerce.Wishlists;
 using Restaurant.Domain.Entities.Catalog;
 using Restaurant.Domain.Entities.Commerce;
 using Restaurant.Domain.Entities.Guest;
@@ -16,7 +16,6 @@ using Restaurant.Domain.Repositories.Commerce;
 using Restaurant.Domain.Repositories.Guest;
 using Restaurant.Domain.Repositories.Identity;
 using System.Net;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurant.Persistence.Services.Commerce
 {
@@ -164,7 +163,70 @@ namespace Restaurant.Persistence.Services.Commerce
 
             var response = _mapper.Map<CartResponse>(cart);
             return Result<CartResponse>
-                .Succeed(response, Success<Cart>.Retrieved);
+                .Succeed(response, Success<CartItem>.Added);
+        }
+
+        public async Task<Result<CartResponse>> RemoveItemAsync(
+            RemoveCartItemCommand command,
+            RemoveCartItemSpecification specification,
+            CancellationToken cancellationToken = default)
+        {
+            var product = await _productRepository.FindByIdAsync(command.Body.ProductId, cancellationToken);
+            if (product is null)
+            {
+                return Result<CartResponse>
+                    .Fail(Error<Product>.NotFound, HttpStatusCode.NotFound);
+            }
+
+            Cart? cart;
+
+            if (command.UserId != null)
+            {
+                var user = await _userRepository.FindByIdAsync(command.UserId, cancellationToken);
+                if (user is null)
+                {
+                    return Result<CartResponse>
+                        .Fail(Error<User>.NotFound, HttpStatusCode.NotFound);
+                }
+
+                var customer = await _customerRepository.FindByUserIdAsync(user.Id, cancellationToken);
+                if (customer is null)
+                {
+                    return Result<CartResponse>
+                        .Fail(Error<Customer>.NotFound, HttpStatusCode.NotFound);
+                }
+
+                cart = await _cartRepository.FindAsync(specification, cancellationToken);
+                if (cart is null)
+                {
+                    return Result<CartResponse>
+                        .Fail(Error<Cart>.NotFound, HttpStatusCode.NotFound);
+                }
+            }
+            else
+            {
+                cart = await _cartRepository.FindAsync(specification, cancellationToken);
+                if (cart is null)
+                {
+                    return Result<CartResponse>
+                        .Fail(Error<Cart>.NotFound, HttpStatusCode.NotFound);
+                }
+            }
+
+            var cartItem = cart.CartItems.FirstOrDefault(x => x.ProductId == product.Id);
+            if (cartItem is null)
+            {
+                return Result<CartResponse>
+                    .Fail("This product has not been added to your cart.", HttpStatusCode.NotFound);
+            }
+
+            _cartItemRepository.Remove(cartItem);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var response = _mapper.Map<CartResponse>(cart);
+            return Result<CartResponse>
+                .Succeed(response, Success<CartItem>.Deleted);
         }
     }
 }

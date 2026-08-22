@@ -269,7 +269,7 @@ namespace Restaurant.Persistence.Services.Commerce
 
             var response = _mapper.Map<WishlistResponse>(wishlist);
             return Result<WishlistResponse>
-                .Succeed(response, Success<WishlistItem>.Added);
+                .Succeed(response, Success<WishlistItem>.Deleted);
         }
     }
 }
